@@ -1,6 +1,6 @@
 # API REST para uma Rede Social Simples
 
-Este projeto consiste em uma API RESTful desenvolvida em Java com Spring Boot para simular as funcionalidades básicas de uma rede social. O objetivo principal é demonstrar familiaridade com diversas tecnologias modernas de desenvolvimento backend e servir como um projeto de aprendizado.
+Este projeto consiste numa API RESTful desenvolvida em Java com Spring Boot para simular as funcionalidades básicas de uma rede social. O objetivo principal é demonstrar familiaridade com diversas tecnologias modernas de desenvolvimento backend e servir como um projeto de aprendizado.
 
 ## Tecnologias Utilizadas
 
@@ -26,7 +26,7 @@ Este projeto utiliza as seguintes tecnologias:
 
 * **Gestão de Utilizadores:**
     * Registo de Utilizadores (criar conta com nome de utilizador, email e senha).
-    * Login de Utilizadores (autenticação para aceder a funcionalidades protegidas - implementação futura).
+    * ‘Login’ de Utilizadores (autenticação para aceder a funcionalidades protegidas - implementação futura).
     * Visualização de Perfil de Utilizador (nome de utilizador).
 * **Gestão de Posts:**
     * Criação de Posts (apenas texto por enquanto).
