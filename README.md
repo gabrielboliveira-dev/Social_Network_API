@@ -53,8 +53,8 @@ Antes de executar o projeto, você precisará ter as seguintes ferramentas insta
 
 1.  **Clone o repositório:**
     ```bash
-    git clone https://github.com/Gabriel-Oliveiraa/Social_Network
-    cd Social_Network
+    git clone https://github.com/Gabriel-Oliveiraa/socialnetwork
+    cd socialnetwork
     ```
 
 2.  **Configure o banco de dados PostgreSQL:**
