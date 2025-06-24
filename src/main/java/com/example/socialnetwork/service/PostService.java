@@ -4,7 +4,6 @@ import com.example.socialnetwork.entity.Post;
 import com.example.socialnetwork.entity.User;
 import com.example.socialnetwork.repository.PostRepository;
 import com.example.socialnetwork.repository.UserRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -16,7 +15,6 @@ public class PostService {
     private final PostRepository postRepository;
     private final UserRepository userRepository;
 
-    @Autowired
     public PostService(PostRepository postRepository, UserRepository userRepository) {
         this.postRepository = postRepository;
         this.userRepository = userRepository;

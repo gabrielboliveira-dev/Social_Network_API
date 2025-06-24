@@ -2,7 +2,8 @@ package com.example.socialnetwork.service;
 
 import com.example.socialnetwork.entity.User;
 import com.example.socialnetwork.repository.UserRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -12,10 +13,11 @@ import java.util.Optional;
 public class UserService {
 
     private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
 
-    @Autowired
-    public UserService(UserRepository userRepository) {
+    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
+        this.passwordEncoder = passwordEncoder;
     }
 
     public User registerUser(User user) {
@@ -25,7 +27,8 @@ public class UserService {
         if (userRepository.existsByEmail(user.getEmail())) {
             throw new IllegalStateException("Email already registered");
         }
-        // TODO: Implement password encoding (Spring Security)
+
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
         return userRepository.save(user);
     }
 
@@ -39,12 +42,6 @@ public class UserService {
 
     public List<User> findAllUsers() {
         return userRepository.findAll();
-    }
-
-    // TODO: Implement logic for login (using Spring Security)
-    public Optional<User> loginUser(String username, String password) {
-        return userRepository.findByUsername(username)
-                .filter(user -> user.getPassword().equals(password)); // Basic check, replace with proper authentication
     }
 
     public void followUser(Long followerId, Long followingId) {
