@@ -1,119 +1,105 @@
-# API REST para uma Rede Social Simples
+# Social Network API
 
-Este projeto consiste numa API RESTful desenvolvida em Java com Spring Boot para simular as funcionalidades básicas de uma rede social. O objetivo principal é demonstrar familiaridade com diversas tecnologias modernas de desenvolvimento backend e servir como um projeto de aprendizado.
+### Uma API RESTful construída com Arquitetura Limpa, Código Limpo e Boas Práticas de Engenharia de Software.
 
-## Tecnologias Utilizadas
+### Visão Geral
 
-Este projeto utiliza as seguintes tecnologias:
+Este projeto é uma API RESTful para uma rede social simples, desenvolvida com o objetivo principal de demonstrar o domínio de conceitos fundamentais e boas práticas de desenvolvimento de software. A arquitetura foi projetada seguindo os princípios da **Arquitetura Limpa (Clean Architecture)** e **SOLID**, garantindo um código desacoplado, testável e de fácil manutenção.
 
-* **Linguagem de Programação:** Java
-* **Framework Backend:** Spring Boot
-* **Framework REST:** Spring MVC
-* **Persistência de Dados:** Spring Data JPA, Hibernate
-* **Banco de Dados:** PostgreSQL
-* **Segurança:** Spring Security (implementação futura)
-* **Testes:** JUnit, Mockito
-* **Build e Gerenciamento de Dependências:** Maven
-* **Containerização:** Docker, Docker Compose
-* **Versionamento de Código:** Git
-* **Ambiente de Nuvem (Implantação Futura):** AWS (EC2, RDS, S3, CloudWatch)
-* **Mensageria (Implantação Futura):** JMS, RabbitMQ (ou similar)
-* **Integração Contínua/Entrega Contínua (Implantação Futura):** Jenkins
-* **Orquestração de Contêineres (Implantação Futura):** Kubernetes
-* **Princípios de Desenvolvimento:** SOLID, DDD (em estudo), Clean Code, Design Patterns
+O projeto utiliza um conjunto de tecnologias modernas e de código aberto para criar uma base robusta e escalável, focando em segurança, eficiência e qualidade de código.
 
-## Funcionalidades Atuais (MVP - Minimum Viable Product)
+### Funcionalidades (MVP - Minimum Viable Product)
 
-* **Gestão de Utilizadores:**
-    * Registo de Utilizadores (criar conta com nome de utilizador, email e senha).
-    * ‘Login’ de Utilizadores (autenticação para aceder a funcionalidades protegidas - implementação futura).
-    * Visualização de Perfil de Utilizador (nome de utilizador).
-* **Gestão de Posts:**
-    * Criação de Posts (apenas texto por enquanto).
-    * Listagem de Posts (todos os utilizadores).
-    * Visualização de um Post específico.
-    * Exclusão de um Post (apenas pelo criador).
-* **Seguir/Deixar de Seguir Utilizadores:**
-    * Seguir outros utilizadores.
-    * Listagem de Utilizadores que um utilizador segue (seguindo).
-    * Listagem de Utilizadores que seguem um utilizador (seguidores).
+A API fornece as seguintes funcionalidades principais:
 
-## Pré-requisitos
+  * **Autenticação e Autorização:**
+      * Registro de novos usuários.
+      * Login com geração de **JWT (JSON Web Token)** para autenticação.
+      * Proteção de endpoints, permitindo acesso apenas a usuários autenticados.
+  * **Gestão de Usuários:**
+      * Visualização de perfil de usuário.
+      * Funcionalidade de "seguir" e "deixar de seguir" outros usuários.
+  * **Gestão de Posts:**
+      * Criação, visualização e exclusão de posts.
+  * **Feed de Posts:**
+      * Visualização de um feed de posts.
 
-Antes de executar o projeto, você precisará ter as seguintes ferramentas instaladas:
+### Tecnologias Utilizadas
 
-* **Java JDK:** (Versão recomendada: 17 ou superior)
-* **Maven:** (Versão recomendada: 3.6.x ou superior)
-* **Docker:** (Para containerização)
-* **Docker Compose:** (Para orquestração de contêineres local)
-* **PostgreSQL:** (Para o banco de dados)
-* **Git:** (Para versionamento de código)
+  * **Linguagem de Programação:** Java 17
+  * **Framework Backend:** Spring Boot 3.3.1
+  * **Persistência de Dados:** Spring Data JPA e Hibernate
+  * **Banco de Dados:** PostgreSQL
+  * **Segurança:** Spring Security (com JWT)
+  * **Mensageria:** RabbitMQ (futuro)
+  * **Build e Dependências:** Maven
+  * **Containerização:** Docker e Docker Compose
+  * **Versionamento:** Git
+  * **Ferramenta de Gerenciamento de BD:** DBeaver
+  * **Utilitários:** Lombok (redução de código boilerplate)
+  * **Testes:** JUnit e Mockito (futuro)
+  * **Boas Práticas:** Arquitetura Limpa, SOLID, DTOs e Clean Code
 
-## Configuração do Projeto
+### Arquitetura do Projeto
 
-1.  **Clone o repositório:**
+O projeto é estruturado em camadas distintas para isolar as regras de negócio das preocupações de infraestrutura, seguindo o padrão da Arquitetura Limpa.
+
+```
+social-network-api/
+├── src/
+│   └── main/
+│       └── java/
+│           └── com/
+│               └── example/
+│                   └── socialnetwork/
+│                       ├── domain/           <-- Camada de Domínio (Regras de Negócio Puras)
+│                       │   ├── entity/           <-- Entidades (User, Post)
+│                       │   └── repository/       <-- Interfaces de Repositório (UserRepository)
+│                       ├── application/      <-- Camada de Aplicação (Lógica de Uso do Domínio)
+│                       │   └── service/          <-- Implementações de Serviço (UserService)
+│                       ├── infrastructure/   <-- Camada de Infraestrutura (Tecnologia Externa)
+│                       │   ├── config/           <-- Configurações de Segurança e Outros
+│                       │   ├── controller/       <-- Endpoints da API REST
+│                       │   ├── dto/              <-- DTOs para comunicação externa
+│                       │   └── security/         <-- Utilitários de JWT e Filtros
+│                       └── SocialNetworkApplication.java
+```
+
+  * **Domain (Domínio):** O núcleo da aplicação. Contém as entidades e interfaces que definem o "o quê" do nosso sistema (o que é um usuário, um post, etc.). Não depende de nenhuma tecnologia externa.
+  * **Application (Aplicação):** Contém a lógica de negócio específica do aplicativo, orquestrando as entidades do domínio para realizar ações (o "como").
+  * **Infrastructure (Infraestrutura):** Lida com todos os detalhes tecnológicos, como a API REST, o banco de dados, a segurança, etc. Esta camada depende das camadas internas, mas as camadas internas não dependem dela.
+
+### Como Executar o Projeto
+
+1.  **Pré-requisitos:** Certifique-se de ter o **Java JDK 17+**, **Maven** e **Docker** instalados.
+2.  **Clone o repositório:**
     ```bash
-    git clone https://github.com/Gabriel-Oliveiraa/socialnetwork
-    cd socialnetwork
+    git clone https://docs.github.com/articles/referencing-and-citing-content
+    cd social-network-api
     ```
-
-2.  **Configure o banco de dados PostgreSQL:**
-    * Crie um banco de dados chamado `social_network` (ou outro nome de sua preferência).
-    * Configure as credenciais de acesso ao banco de dados no arquivo `src/main/resources/application.properties` ou `application.yml`. Exemplo em `application.properties`:
-        ```properties
-        spring.datasource.url=jdbc:postgresql://localhost:5432/social_network
-        spring.datasource.username=seu_usuario
-        spring.datasource.password=sua_senha
-        spring.jpa.hibernate.ddl-auto=update
-        ```
-
-3.  **Execute o backend com Maven (para desenvolvimento):**
+3.  **Configure o ambiente com Docker Compose:**
+      * Este comando irá levantar o banco de dados PostgreSQL em um container.
+    <!-- end list -->
+    ```bash
+    docker-compose up -d
+    ```
+4.  **Configure as propriedades da aplicação:**
+      * Abra o arquivo `src/main/resources/application.properties`.
+      * Preencha as credenciais do seu banco de dados PostgreSQL e a chave secreta do JWT.
+5.  **Execute a aplicação:**
+      * A partir da linha de comando, no diretório raiz do projeto:
+    <!-- end list -->
     ```bash
     mvn spring-boot:run
     ```
-    O backend estará disponível em `http://localhost:8080`.
+      * O backend estará disponível em `http://localhost:8080`.
 
-4.  **Execute o backend com Docker Compose (para ambiente de desenvolvimento):**
-    * Certifique-se de ter o Docker e Docker Compose instalados.
-    * No diretório raiz do projeto, execute:
-        ```bash
-        docker-compose up -d
-        ```
-    * Isso irá construir e iniciar o container da aplicação Spring Boot e do PostgreSQL. A aplicação estará acessível em `http://localhost:8080`.
+### Próximos Passos e Oportunidades de Melhoria
 
-## Endpoints da API (Exemplos)
-
-Aqui estão alguns exemplos dos endpoints da API REST (sujeitos a alterações):
-
-* **POST /api/users/register:** Registra um novo utilizador.
-* **POST /api/users/login:** Autentica um utilizador (implementação futura).
-* **GET /api/users/{userId}:** Obtém informações de um utilizador específico.
-* **POST /api/posts:** Cria um novo post.
-* **GET /api/posts:** Lista todos os posts.
-* **GET /api/posts/{postId}:** Obtém um post específico.
-* **DELETE /api/posts/{postId}:** Exclui um post (requer autenticação - implementação futura).
-* **POST /api/follow/{userIdToFollow}:** Segue um utilizador.
-* **DELETE /api/follow/{userIdToUnfollow}:** Deixa de seguir um utilizador.
-* **GET /api/users/{userId}/following:** Lista os utilizadores que um utilizador segue.
-* **GET /api/users/{userId}/followers:** Lista os seguidores de um utilizador.
-
-## Próximos Passos e Melhorias Futuras
-
-Este projeto está em desenvolvimento e as seguintes melhorias estão planejadas:
-
-* Implementação completa de **autenticação e autorização** com Spring Security (JWT).
-* Adicionar funcionalidade para **editar posts**.
-* Implementar **upload de imagens** para posts e perfis (integrando com AWS S3).
-* Desenvolver a funcionalidade de **"gostar" (like)** em posts.
-* Implementar **comentários** em posts.
-* Melhorar o **feed de posts** para exibir apenas os posts dos utilizadores seguidos.
-* Adicionar **testes de integração** para os endpoints da API.
-* Configurar um pipeline de **Integração Contínua/Entrega Contínua (CI/CD)** com Jenkins.
-* Realizar o **deployment na AWS** utilizando EC2 e RDS.
-* Explorar o uso de **mensageria** (RabbitMQ) para funcionalidades assíncronas.
-* Considerar a **documentação da API** com Swagger/OpenAPI.
-* Explorar conceitos de **DDD (Domain-Driven Design)** para melhor modelagem do domínio.
-
-## Contribuição
-
-Contribuições são bem-vindas! Se você tiver alguma sugestão de melhoria ou encontrar algum problema, sinta-se à vontade para abrir uma issue ou enviar um pull request.
+  * **DTOs:** Refatorar a API para usar **DTOs (Data Transfer Objects)** para todas as operações de CRUD, protegendo as entidades e validando a entrada com **Jakarta Bean Validation**.
+  * **Recursos Avançados:** Adicionar funcionalidades de "gostar" e "comentar" em posts.
+  * **Armazenamento de Imagens:** Implementar a funcionalidade de upload de imagens (para perfis e posts) com armazenamento local.
+  * **Testes Automatizados:** Adicionar cobertura de testes unitários (JUnit e Mockito) e de integração (com `TestContainers` para o banco de dados).
+  * **Documentação:** Integrar o **Swagger/OpenAPI** para documentar e explorar os endpoints da API.
+  * **CI/CD:** Configurar um pipeline de Integração Contínua e Entrega Contínua com **Jenkins** e **Docker**.
+  * **Mensageria:** Implementar funcionalidades assíncronas (como envio de notificações) usando **RabbitMQ**.
