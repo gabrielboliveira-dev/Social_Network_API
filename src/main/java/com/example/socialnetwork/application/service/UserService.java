@@ -8,4 +8,6 @@ public interface UserService {
     User registerUser(User user);
     Optional<User> findUserById(UUID id);
     Optional<User> findUserByUsername(String username);
+    void followUser(UUID followerId, UUID followingId);
+    void unfollowUser(UUID followerId, UUID followingId);
 }

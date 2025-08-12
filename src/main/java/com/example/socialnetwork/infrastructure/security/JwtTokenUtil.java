@@ -31,7 +31,7 @@ public class JwtTokenUtil {
     private String createToken(Map<String, Object> claims, String subject) {
         return Jwts.builder()
                 .claims(claims)
-                .subject(subject) 
+                .subject(subject)
                 .issuedAt(new Date(System.currentTimeMillis()))
                 .expiration(new Date(System.currentTimeMillis() + expiration))
                 .signWith(getSigningKey())
@@ -61,12 +61,12 @@ public class JwtTokenUtil {
     }
 
     private Claims extractAllClaims(String token) {
-    return Jwts.parser() 
-            .setSigningKey(getSigningKey())
-            .build()
-            .parseClaimsJws(token) 
-            .getBody();
-}
+        return Jwts.parser()
+                .setSigningKey(getSigningKey())
+                .build()
+                .parseClaimsJws(token)
+                .getBody();
+    }
 
     private Key getSigningKey() {
         byte[] keyBytes = Decoders.BASE64.decode(secret);

@@ -1,11 +1,12 @@
 package com.example.socialnetwork.infrastructure.controller;
 
+import com.example.socialnetwork.application.service.UserService;
+import com.example.socialnetwork.domain.entity.User;
 import com.example.socialnetwork.infrastructure.dto.LoginRequest;
 import com.example.socialnetwork.infrastructure.dto.LoginResponse;
-import com.example.socialnetwork.entity.User;
+import com.example.socialnetwork.infrastructure.dto.UserRegistrationRequest;
 import com.example.socialnetwork.infrastructure.security.JwtTokenUtil;
-import com.example.socialnetwork.application.service.UserService;
-import org.springframework.http.HttpHeaders;
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -32,29 +33,31 @@ public class AuthController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity<User> registerUser(@RequestBody User user) {
+    public ResponseEntity<?> registerUser(@Valid @RequestBody UserRegistrationRequest request) {
         try {
-            User registeredUser = userService.registerUser(user);
-            return new ResponseEntity<>(registeredUser, new HttpHeaders(), HttpStatus.CREATED);
+            User newUser = User.builder()
+                    .username(request.getUsername())
+                    .password(request.getPassword())
+                    .email(request.getEmail())
+                    .build();
+            User registeredUser = userService.registerUser(newUser);
+            return new ResponseEntity<>(registeredUser, HttpStatus.CREATED);
         } catch (IllegalStateException e) {
-            return new ResponseEntity<>(null, new HttpHeaders(), HttpStatus.CONFLICT);
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.CONFLICT);
         }
     }
 
     @PostMapping("/login")
-    public ResponseEntity<LoginResponse> loginUser(@RequestBody LoginRequest loginRequest) {
+    public ResponseEntity<?> loginUser(@Valid @RequestBody LoginRequest request) {
         try {
             Authentication authentication = authenticationManager.authenticate(
-                    new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword())
+                    new UsernamePasswordAuthenticationToken(request.getUsername(), request.getPassword())
             );
-
             UserDetails userDetails = (UserDetails) authentication.getPrincipal();
             String token = jwtTokenUtil.generateToken(userDetails);
-
-            return new ResponseEntity<>(new LoginResponse(token), new HttpHeaders(), HttpStatus.OK);
-
+            return ResponseEntity.ok(new LoginResponse(token));
         } catch (Exception e) {
-            return new ResponseEntity<>(null, new HttpHeaders(), HttpStatus.UNAUTHORIZED);
+            return new ResponseEntity<>("Invalid username or password", HttpStatus.UNAUTHORIZED);
         }
     }
 }

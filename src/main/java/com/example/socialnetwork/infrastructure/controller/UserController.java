@@ -1,13 +1,15 @@
 package com.example.socialnetwork.infrastructure.controller;
 
-import com.example.socialnetwork.entity.User;
 import com.example.socialnetwork.application.service.UserService;
+import com.example.socialnetwork.domain.entity.User;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/users")
@@ -19,49 +21,44 @@ public class UserController {
         this.userService = userService;
     }
 
-    @PostMapping("/register")
-    public ResponseEntity<User> registerUser(@RequestBody User user) {
-        User registeredUser = userService.registerUser(user);
-        return new ResponseEntity<>(registeredUser, HttpStatus.CREATED);
-    }
-
     @GetMapping("/{id}")
-    public ResponseEntity<User> getUserById(@PathVariable Long id) {
+    public ResponseEntity<User> getUserById(@PathVariable UUID id) {
         Optional<User> user = userService.findUserById(id);
         return user.map(ResponseEntity::ok)
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
-    @GetMapping("/username/{username}")
-    public ResponseEntity<User> getUserByUsername(@PathVariable String username) {
-        Optional<User> user = userService.findUserByUsername(username);
-        return user.map(ResponseEntity::ok)
-                .orElseGet(() -> ResponseEntity.notFound().build());
-    }
-
-    @GetMapping
-    public ResponseEntity<List<User>> getAllUsers() {
-        List<User> users = userService.findAllUsers();
-        return new ResponseEntity<>(users, HttpStatus.OK);
-    }
-
     @PostMapping("/follow/{followingId}")
-    public ResponseEntity<Void> followUser(@RequestParam Long followerId, @PathVariable Long followingId) {
+    public ResponseEntity<Void> followUser(@PathVariable UUID followingId, Authentication authentication) {
+        UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+        Optional<User> followerUser = userService.findUserByUsername(userDetails.getUsername());
+
+        if (followerUser.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+
         try {
-            userService.followUser(followerId, followingId);
+            userService.followUser(followerUser.get().getId(), followingId);
             return ResponseEntity.ok().build();
         } catch (IllegalArgumentException e) {
-            return ResponseEntity.badRequest().body(null);
+            return ResponseEntity.badRequest().build();
         }
     }
 
-    @PostMapping("/unfollow/{followingId}")
-    public ResponseEntity<Void> unfollowUser(@RequestParam Long followerId, @PathVariable Long followingId) {
+    @DeleteMapping("/unfollow/{followingId}")
+    public ResponseEntity<Void> unfollowUser(@PathVariable UUID followingId, Authentication authentication) {
+        UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+        Optional<User> followerUser = userService.findUserByUsername(userDetails.getUsername());
+
+        if (followerUser.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+
         try {
-            userService.unfollowUser(followerId, followingId);
+            userService.unfollowUser(followerUser.get().getId(), followingId);
             return ResponseEntity.ok().build();
         } catch (IllegalArgumentException e) {
-            return ResponseEntity.badRequest().body(null);
+            return ResponseEntity.badRequest().build();
         }
     }
 }
