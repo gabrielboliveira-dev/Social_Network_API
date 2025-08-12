@@ -1,9 +1,9 @@
-package com.example.socialnetwork.service;
+package com.example.socialnetwork.application.service;
 
 import com.example.socialnetwork.entity.Post;
 import com.example.socialnetwork.entity.User;
-import com.example.socialnetwork.repository.PostRepository;
-import com.example.socialnetwork.repository.UserRepository;
+import com.example.socialnetwork.domain.repository.PostRepository;
+import com.example.socialnetwork.domain.repository.UserRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;

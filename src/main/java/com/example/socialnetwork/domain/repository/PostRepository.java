@@ -1,4 +1,4 @@
-package com.example.socialnetwork.repository;
+package com.example.socialnetwork.domain.repository;
 
 import com.example.socialnetwork.entity.Post;
 import com.example.socialnetwork.entity.User;

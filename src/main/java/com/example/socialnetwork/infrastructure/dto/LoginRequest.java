@@ -1,4 +1,4 @@
-package com.example.socialnetwork.dto;
+package com.example.socialnetwork.infrastructure.dto;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -9,6 +9,7 @@ import lombok.AllArgsConstructor;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class LoginResponse {
-    private String jwtToken;
+public class LoginRequest {
+    private String username;
+    private String password;
 }

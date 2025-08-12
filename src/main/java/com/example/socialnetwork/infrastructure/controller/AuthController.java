@@ -1,10 +1,10 @@
-package com.example.socialnetwork.controller;
+package com.example.socialnetwork.infrastructure.controller;
 
-import com.example.socialnetwork.dto.LoginRequest;
-import com.example.socialnetwork.dto.LoginResponse;
+import com.example.socialnetwork.infrastructure.dto.LoginRequest;
+import com.example.socialnetwork.infrastructure.dto.LoginResponse;
 import com.example.socialnetwork.entity.User;
-import com.example.socialnetwork.security.JwtTokenUtil;
-import com.example.socialnetwork.service.UserService;
+import com.example.socialnetwork.infrastructure.security.JwtTokenUtil;
+import com.example.socialnetwork.application.service.UserService;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

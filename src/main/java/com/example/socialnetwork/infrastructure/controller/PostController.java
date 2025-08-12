@@ -1,7 +1,7 @@
-package com.example.socialnetwork.controller;
+package com.example.socialnetwork.infrastructure.controller;
 
 import com.example.socialnetwork.entity.Post;
-import com.example.socialnetwork.service.PostService;
+import com.example.socialnetwork.application.service.PostService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

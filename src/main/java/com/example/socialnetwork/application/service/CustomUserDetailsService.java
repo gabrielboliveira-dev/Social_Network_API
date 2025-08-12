@@ -1,7 +1,7 @@
-package com.example.socialnetwork.service;
+package com.example.socialnetwork.application.service;
 
 import com.example.socialnetwork.entity.User;
-import com.example.socialnetwork.repository.UserRepository;
+import com.example.socialnetwork.domain.repository.UserRepository;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
