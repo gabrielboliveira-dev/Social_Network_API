@@ -1,4 +1,0 @@
-com\example\socialnetwork\security\JwtRequestFilter.class
-com\example\socialnetwork\SocialnetworkApplication.class
-com\example\socialnetwork\config\SecurityConfig.class
-com\example\socialnetwork\service\CustomUserDetailsService.class

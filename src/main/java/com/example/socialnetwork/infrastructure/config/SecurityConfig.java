@@ -1,7 +1,6 @@
 package com.example.socialnetwork.infrastructure.config;
 
 import com.example.socialnetwork.infrastructure.security.JwtRequestFilter;
-import com.example.socialnetwork.application.service.CustomUserDetailsService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
