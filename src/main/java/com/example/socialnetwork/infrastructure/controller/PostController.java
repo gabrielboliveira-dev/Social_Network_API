@@ -1,7 +1,7 @@
 package com.example.socialnetwork.infrastructure.controller;
 
-import com.example.socialnetwork.application.service.PostService;
-import com.example.socialnetwork.application.service.UserService;
+import com.example.socialnetwork.application.service.PostServiceImpl;
+import com.example.socialnetwork.application.service.UserServiceImpl;
 import com.example.socialnetwork.domain.entity.Post;
 import com.example.socialnetwork.domain.entity.User;
 import com.example.socialnetwork.infrastructure.dto.CreatePostRequest;
@@ -20,10 +20,10 @@ import java.util.UUID;
 @RequestMapping("/api/posts")
 public class PostController {
 
-    private final PostService postService;
-    private final UserService userService;
+    private final PostServiceImpl postService;
+    private final UserServiceImpl userService;
 
-    public PostController(PostService postService, UserService userService) {
+    public PostController(PostServiceImpl postService, UserServiceImpl userService) {
         this.postService = postService;
         this.userService = userService;
     }

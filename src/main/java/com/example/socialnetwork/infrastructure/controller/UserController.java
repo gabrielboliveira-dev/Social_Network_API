@@ -1,6 +1,6 @@
 package com.example.socialnetwork.infrastructure.controller;
 
-import com.example.socialnetwork.application.service.UserService;
+import com.example.socialnetwork.application.service.UserServiceImpl;
 import com.example.socialnetwork.domain.entity.User;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,9 +15,9 @@ import java.util.UUID;
 @RequestMapping("/api/users")
 public class UserController {
 
-    private final UserService userService;
+    private final UserServiceImpl userService;
 
-    public UserController(UserService userService) {
+    public UserController(UserServiceImpl userService) {
         this.userService = userService;
     }
 

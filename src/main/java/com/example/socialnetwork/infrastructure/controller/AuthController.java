@@ -1,6 +1,6 @@
 package com.example.socialnetwork.infrastructure.controller;
 
-import com.example.socialnetwork.application.service.UserService;
+import com.example.socialnetwork.application.service.UserServiceImpl;
 import com.example.socialnetwork.domain.entity.User;
 import com.example.socialnetwork.infrastructure.dto.LoginRequest;
 import com.example.socialnetwork.infrastructure.dto.LoginResponse;
@@ -24,9 +24,9 @@ public class AuthController {
 
     private final AuthenticationManager authenticationManager;
     private final JwtTokenUtil jwtTokenUtil;
-    private final UserService userService;
+    private final UserServiceImpl userService;
 
-    public AuthController(AuthenticationManager authenticationManager, JwtTokenUtil jwtTokenUtil, UserService userService) {
+    public AuthController(AuthenticationManager authenticationManager, JwtTokenUtil jwtTokenUtil, UserServiceImpl userService) {
         this.authenticationManager = authenticationManager;
         this.jwtTokenUtil = jwtTokenUtil;
         this.userService = userService;

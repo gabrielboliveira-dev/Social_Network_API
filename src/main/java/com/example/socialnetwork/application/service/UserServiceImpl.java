@@ -7,8 +7,6 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import com.example.socialnetwork.domain.repository.UserRepository;
-import com.example.socialnetwork.application.service.UserService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import java.util.Collections;
@@ -53,6 +51,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         );
     }
 
+    @Override
     public void followUser(UUID followerId, UUID followingId) {
         if (followerId.equals(followingId)) {
             throw new IllegalArgumentException("Cannot follow yourself");
@@ -75,6 +74,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         }
     }
 
+    @Override
     public void unfollowUser(UUID followerId, UUID followingId) {
         Optional<User> followerOptional = userRepository.findById(followerId);
         Optional<User> followingOptional = userRepository.findById(followingId);
