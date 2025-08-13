@@ -43,13 +43,13 @@ public class PostController {
         }
 
         Post newPost = postService.createPost(request.getContent(), author.get());
-        return new ResponseEntity<>(convertToDto(newPost), HttpStatus.CREATED);
+        return new ResponseEntity<>(convertToPostDto(newPost), HttpStatus.CREATED);
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<PostResponse> getPostById(@PathVariable UUID id) {
         return postService.findPostById(id)
-                .map(this::convertToDto)
+                .map(this::convertToPostDto)
                 .map(dto -> new ResponseEntity<>(dto, HttpStatus.OK))
                 .orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
@@ -58,7 +58,7 @@ public class PostController {
     public ResponseEntity<List<PostResponse>> getAllPosts() {
         List<Post> posts = postService.findAllPosts();
         List<PostResponse> postDtos = posts.stream()
-                .map(this::convertToDto)
+                .map(this::convertToPostDto)
                 .collect(Collectors.toList());
         return new ResponseEntity<>(postDtos, HttpStatus.OK);
     }
@@ -133,7 +133,7 @@ public class PostController {
 
         try {
             Comment newComment = postService.addComment(postId, request.getContent(), author.get());
-            return new ResponseEntity<>(convertToDto(newComment), HttpStatus.CREATED);
+            return new ResponseEntity<>(convertToCommentDto(newComment), HttpStatus.CREATED);
         } catch (IllegalArgumentException e) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
@@ -158,7 +158,7 @@ public class PostController {
         }
     }
 
-    private PostResponse convertToDto(Post post) {
+    private PostResponse convertToPostDto(Post post) {
         PostResponse dto = new PostResponse();
         dto.setId(post.getId());
         dto.setContent(post.getContent());
@@ -167,7 +167,7 @@ public class PostController {
         return dto;
     }
 
-    private CommentResponse convertToDto(Comment comment) {
+    private CommentResponse convertToCommentDto(Comment comment) {
         CommentResponse dto = new CommentResponse();
         dto.setId(comment.getId());
         dto.setContent(comment.getContent());

@@ -10,6 +10,7 @@ import com.example.socialnetwork.domain.repository.PostRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -29,6 +30,16 @@ public class PostServiceImpl implements PostService {
                 .createdAt(LocalDateTime.now())
                 .build();
         return postRepository.save(post);
+    }
+
+    @Override
+    public Optional<Post> findPostById(UUID id) {
+        return postRepository.findById(id);
+    }
+
+    @Override
+    public List<Post> findAllPosts() {
+        return postRepository.findAll();
     }
 
     @Override
@@ -83,7 +94,7 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public void addComment(UUID postId, String content, User author) {
+    public Comment addComment(UUID postId, String content, User author) {
         Post post = postRepository.findById(postId)
                 .orElseThrow(() -> new IllegalArgumentException("Post not found."));
 
@@ -93,7 +104,7 @@ public class PostServiceImpl implements PostService {
                 .post(post)
                 .createdAt(LocalDateTime.now())
                 .build();
-        commentRepository.save(comment);
+        return commentRepository.save(comment);
     }
 
     @Override

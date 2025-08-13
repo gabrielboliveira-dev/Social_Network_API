@@ -1,5 +1,6 @@
 package com.example.socialnetwork.application.service;
 
+import com.example.socialnetwork.domain.entity.Comment;
 import com.example.socialnetwork.domain.entity.Post;
 import com.example.socialnetwork.domain.entity.User;
 
@@ -13,8 +14,8 @@ public interface PostService {
     void deletePost(UUID id, User currentUser);
     void likePost(UUID postId, User user);
     void unlikePost(UUID postId, User user);
-    void addComment(UUID postId, String content, User author);
+    Comment addComment(UUID postId, String content, User author);
     void deleteComment(UUID commentId, User currentUser);
-    Optional<Object> findPostById(UUID id);
+    Optional<Post> findPostById(UUID id);
     List<Post> findAllPosts();
 }
