@@ -6,16 +6,16 @@
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
         <version>3.3.1</version>
-        <relativePath/>
-    </parent>
+        <relativePath/> </parent>
     <groupId>com.example</groupId>
     <artifactId>socialnetwork</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <name>socialnetwork</name>
-    <description>API REST para uma Rede Social Simples</description>
+    <description>Este projeto é uma API RESTful para uma rede social simples, desenvolvida com o objetivo principal de demonstrar o domínio de conceitos fundamentais e boas práticas de desenvolvimento de software.</description>
 
     <properties>
         <java.version>17</java.version>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <jjwt.version>0.12.5</jjwt.version>
         <testcontainers.version>1.19.8</testcontainers.version>
         <springdoc.version>2.5.0</springdoc.version>
@@ -66,15 +66,6 @@
             <artifactId>postgresql</artifactId>
             <scope>runtime</scope>
         </dependency>
-        <dependency>
-            <groupId>com.h2database</groupId>
-            <artifactId>h2</artifactId>
-            <scope>runtime</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.flywaydb</groupId>
-            <artifactId>flyway-core</artifactId>
-        </dependency>
 
         <dependency>
             <groupId>org.projectlombok</groupId>
@@ -92,7 +83,6 @@
             <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
             <version>${springdoc.version}</version>
         </dependency>
-
 
         <dependency>
             <groupId>org.springframework.boot</groupId>
