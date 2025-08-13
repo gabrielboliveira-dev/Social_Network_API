@@ -1,7 +1,7 @@
 package com.example.socialnetwork.infrastructure.controller;
 
-import com.example.socialnetwork.application.service.PostServiceImpl;
-import com.example.socialnetwork.application.service.UserServiceImpl;
+import com.example.socialnetwork.application.service.PostService;
+import com.example.socialnetwork.application.service.UserService;
 import com.example.socialnetwork.domain.entity.Post;
 import com.example.socialnetwork.domain.entity.User;
 import com.example.socialnetwork.infrastructure.dto.CreatePostRequest;
@@ -20,16 +20,16 @@ import java.util.UUID;
 @RequestMapping("/api/posts")
 public class PostController {
 
-    private final PostServiceImpl postService;
-    private final UserServiceImpl userService;
+    private final PostService postService;
+    private final UserService userService;
 
-    public PostController(PostServiceImpl postService, UserServiceImpl userService) {
+    public PostController(PostService postService, UserService userService) {
         this.postService = postService;
         this.userService = userService;
     }
 
     @PostMapping
-    public ResponseEntity<Post> createPost(@Valid @RequestBody CreatePostRequest request, Authentication authentication) {
+    public ResponseEntity<PostResponse> createPost(@Valid @RequestBody CreatePostRequest request, Authentication authentication) {
         UserDetails userDetails = (UserDetails) authentication.getPrincipal();
         Optional<User> author = userService.findUserByUsername(userDetails.getUsername());
 
@@ -38,7 +38,7 @@ public class PostController {
         }
 
         Post newPost = postService.createPost(request.getContent(), author.get());
-        return new ResponseEntity<>(newPost, HttpStatus.CREATED);
+        return new ResponseEntity<>(convertToDto(newPost), HttpStatus.CREATED);
     }
 
     @GetMapping("/{id}")
