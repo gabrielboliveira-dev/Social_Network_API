@@ -38,6 +38,8 @@ public class User implements UserDetails {
     @Column(name = "password", nullable = false)
     private String password;
 
+    private String profileImageUrl;
+
     @CreationTimestamp
     @Column(name = "created_at", nullable = false, updatable = false)
     private LocalDateTime createdAt;
