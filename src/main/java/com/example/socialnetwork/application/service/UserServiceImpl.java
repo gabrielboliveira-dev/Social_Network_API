@@ -9,6 +9,8 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import java.time.LocalDateTime;
+
 import java.util.Collections;
 import java.util.Optional;
 import java.util.UUID;
@@ -27,6 +29,16 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         }
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         return userRepository.save(user);
+    }
+
+    @Override
+    public void updateUserProfileImage(UUID userId, String imageUrl) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new IllegalArgumentException("User not found."));
+
+        user.setProfileImageUrl(imageUrl);
+        user.setUpdatedAt(LocalDateTime.now());
+        userRepository.save(user);
     }
 
     @Override

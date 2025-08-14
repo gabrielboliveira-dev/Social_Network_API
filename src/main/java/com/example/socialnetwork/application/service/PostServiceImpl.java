@@ -33,6 +33,19 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
+    public void updatePostImageUrl(UUID postId, String imageUrl, User currentUser) {
+        Post post = postRepository.findById(postId)
+                .orElseThrow(() -> new IllegalArgumentException("Post not found."));
+
+        if (!post.getAuthor().getId().equals(currentUser.getId())) {
+            throw new IllegalStateException("You are not authorized to update this post.");
+        }
+        post.setImageUrl(imageUrl);
+        post.setUpdatedAt(LocalDateTime.now());
+        postRepository.save(post);
+    }
+
+    @Override
     public Optional<Post> findPostById(UUID id) {
         return postRepository.findById(id);
     }

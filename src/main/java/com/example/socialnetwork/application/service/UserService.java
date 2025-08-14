@@ -6,6 +6,7 @@ import java.util.UUID;
 
 public interface UserService {
     User registerUser(User user);
+    void updateUserProfileImage(UUID userId, String imageUrl);
     Optional<User> findUserById(UUID id);
     Optional<User> findUserByUsername(String username);
     void followUser(UUID followerId, UUID followingId);

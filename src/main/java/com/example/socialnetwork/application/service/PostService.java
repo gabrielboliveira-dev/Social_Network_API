@@ -18,4 +18,5 @@ public interface PostService {
     void deleteComment(UUID commentId, User currentUser);
     Optional<Post> findPostById(UUID id);
     List<Post> findAllPosts();
+    void updatePostImageUrl(UUID postId, String imageUrl, User currentUser);
 }
