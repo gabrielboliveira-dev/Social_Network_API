@@ -1,48 +1,52 @@
 # Social Network API
 
-### Uma API RESTful construída com Arquitetura Limpa, Código Limpo e Boas Práticas de Engenharia de Software.
+### Uma API RESTful moderna construída com Arquitetura Limpa e Java
 
 ### Visão Geral
 
-Este projeto é uma API RESTful para uma rede social simples, desenvolvida com o objetivo principal de demonstrar o domínio de conceitos fundamentais e boas práticas de desenvolvimento de software. A arquitetura foi projetada seguindo os princípios da **Arquitetura Limpa (Clean Architecture)** e **SOLID**, garantindo um código desacoplado, testável e de fácil manutenção.
+Este projeto é uma API RESTful completa para uma rede social simples, desenvolvida para demonstrar o domínio de conceitos avançados e boas práticas de engenharia de software. A arquitetura foi construída seguindo os princípios da **Arquitetura Limpa (Clean Architecture)** e **SOLID**, garantindo um código altamente desacoplado, testável e de fácil manutenção.
 
-O projeto utiliza um conjunto de tecnologias modernas e de código aberto para criar uma base robusta e escalável, focando em segurança, eficiência e qualidade de código.
+O projeto utiliza um conjunto robusto de tecnologias de código aberto para criar uma solução escalável, com foco em segurança, eficiência e qualidade de código.
 
-### Funcionalidades (MVP - Minimum Viable Product)
+### Funcionalidades Implementadas
 
-A API fornece as seguintes funcionalidades principais:
+A API fornece as seguintes funcionalidades principais, todas protegidas por autenticação JWT:
 
   * **Autenticação e Autorização:**
-      * Registro de novos usuários.
+
+      * Registro de novos usuários com validação de dados.
       * Login com geração de **JWT (JSON Web Token)** para autenticação.
       * Proteção de endpoints, permitindo acesso apenas a usuários autenticados.
+
   * **Gestão de Usuários:**
-      * Visualização de perfil de usuário.
+
+      * Visualização de perfis de usuário.
       * Funcionalidade de "seguir" e "deixar de seguir" outros usuários.
+      * **Upload de Imagem de Perfil** com armazenamento local.
+
   * **Gestão de Posts:**
+
       * Criação, visualização e exclusão de posts.
-  * **Feed de Posts:**
-      * Visualização de um feed de posts.
+      * **Upload de Imagem para Posts** com armazenamento local.
+      * **Adicionar e Remover "gostei" (likes)** em posts.
+      * **Adicionar e Excluir comentários** em posts.
 
 ### Tecnologias Utilizadas
 
+A aplicação utiliza as seguintes tecnologias, que foram configuradas para rodar em containers Docker:
+
   * **Linguagem de Programação:** Java 17
-  * **Framework Backend:** Spring Boot 3.3.1
-  * **Persistência de Dados:** Spring Data JPA e Hibernate
-  * **Banco de Dados:** PostgreSQL
-  * **Segurança:** Spring Security (com JWT)
-  * **Mensageria:** RabbitMQ (futuro)
-  * **Build e Dependências:** Maven
+  * **Framework Backend:** Spring Boot 3.3.1 (Web, Data JPA, Security)
+  * **Persistência:** PostgreSQL (banco de dados) e Spring Data JPA/Hibernate (acesso aos dados)
+  * **Segurança:** Spring Security com JWT e BCrypt (criptografia de senhas)
+  * **Build:** Maven
   * **Containerização:** Docker e Docker Compose
-  * **Versionamento:** Git
-  * **Ferramenta de Gerenciamento de BD:** DBeaver
-  * **Utilitários:** Lombok (redução de código boilerplate)
-  * **Testes:** JUnit e Mockito (futuro)
-  * **Boas Práticas:** Arquitetura Limpa, SOLID, DTOs e Clean Code
+  * **Documentação da API:** Swagger/OpenAPI
+  * **Boas Práticas:** Arquitetura Limpa, SOLID, DTOs e Jakarta Bean Validation
 
-### Arquitetura do Projeto
+### Estrutura do Projeto
 
-O projeto é estruturado em camadas distintas para isolar as regras de negócio das preocupações de infraestrutura, seguindo o padrão da Arquitetura Limpa.
+A arquitetura do projeto é dividida em camadas para isolar as responsabilidades e as regras de negócio das tecnologias externas, conforme o padrão de Arquitetura Limpa.
 
 ```
 social-network-api/
@@ -52,54 +56,53 @@ social-network-api/
 │           └── com/
 │               └── example/
 │                   └── socialnetwork/
-│                       ├── domain/           <-- Camada de Domínio (Regras de Negócio Puras)
-│                       │   ├── entity/           <-- Entidades (User, Post)
-│                       │   └── repository/       <-- Interfaces de Repositório (UserRepository)
-│                       ├── application/      <-- Camada de Aplicação (Lógica de Uso do Domínio)
-│                       │   └── service/          <-- Implementações de Serviço (UserService)
-│                       ├── infrastructure/   <-- Camada de Infraestrutura (Tecnologia Externa)
-│                       │   ├── config/           <-- Configurações de Segurança e Outros
-│                       │   ├── controller/       <-- Endpoints da API REST
-│                       │   ├── dto/              <-- DTOs para comunicação externa
-│                       │   └── security/         <-- Utilitários de JWT e Filtros
-│                       └── SocialNetworkApplication.java
+│                       ├── domain/           <-- Entidades e Interfaces de Repositório
+│                       ├── application/      <-- Lógica de Negócio (Serviços)
+│                       └── infrastructure/   <-- API, Configurações de Segurança e DTOs
+├── Dockerfile                        <-- Instruções para construir a imagem da aplicação
+├── docker-compose.yml                <-- Orquestração da aplicação e do banco de dados
+└── README.md
 ```
-
-  * **Domain (Domínio):** O núcleo da aplicação. Contém as entidades e interfaces que definem o "o quê" do nosso sistema (o que é um usuário, um post, etc.). Não depende de nenhuma tecnologia externa.
-  * **Application (Aplicação):** Contém a lógica de negócio específica do aplicativo, orquestrando as entidades do domínio para realizar ações (o "como").
-  * **Infrastructure (Infraestrutura):** Lida com todos os detalhes tecnológicos, como a API REST, o banco de dados, a segurança, etc. Esta camada depende das camadas internas, mas as camadas internas não dependem dela.
 
 ### Como Executar o Projeto
 
-1.  **Pré-requisitos:** Certifique-se de ter o **Java JDK 17+**, **Maven** e **Docker** instalados.
-2.  **Clone o repositório:**
+Para executar a aplicação e o banco de dados localmente em containers, siga estas instruções:
+
+1.  **Pré-requisitos:**
+
+      * Tenha o **Java JDK 17+** e o **Maven** instalados.
+      * Tenha o **Docker Desktop** instalado e em execução no seu computador.
+
+2.  **Clone o Repositório e Navegue até a Pasta:**
+
     ```bash
-    git clone https://docs.github.com/articles/referencing-and-citing-content
+    git clone https://www.dio.me/articles/enviando-seu-projeto-para-o-github
     cd social-network-api
     ```
-3.  **Configure o ambiente com Docker Compose:**
-      * Este comando irá levantar o banco de dados PostgreSQL em um container.
-    <!-- end list -->
-    ```bash
-    docker-compose up -d
-    ```
-4.  **Configure as propriedades da aplicação:**
+
+3.  **Configurar o `application.properties`:**
+
       * Abra o arquivo `src/main/resources/application.properties`.
-      * Preencha as credenciais do seu banco de dados PostgreSQL e a chave secreta do JWT.
-5.  **Execute a aplicação:**
-      * A partir da linha de comando, no diretório raiz do projeto:
-    <!-- end list -->
-    ```bash
-    mvn spring-boot:run
-    ```
-      * O backend estará disponível em `http://localhost:8080`.
+      * Defina as suas credenciais de banco de dados e a chave secreta JWT.
+      * **Observação:** O `docker-compose.yml` já configura o banco de dados, então o `application.properties` será usado para a aplicação principal.
 
-### Próximos Passos e Oportunidades de Melhoria
+4.  **Construir e Iniciar os Containers:**
 
-  * **DTOs:** Refatorar a API para usar **DTOs (Data Transfer Objects)** para todas as operações de CRUD, protegendo as entidades e validando a entrada com **Jakarta Bean Validation**.
-  * **Recursos Avançados:** Adicionar funcionalidades de "gostar" e "comentar" em posts.
-  * **Armazenamento de Imagens:** Implementar a funcionalidade de upload de imagens (para perfis e posts) com armazenamento local.
-  * **Testes Automatizados:** Adicionar cobertura de testes unitários (JUnit e Mockito) e de integração (com `TestContainers` para o banco de dados).
-  * **Documentação:** Integrar o **Swagger/OpenAPI** para documentar e explorar os endpoints da API.
-  * **CI/CD:** Configurar um pipeline de Integração Contínua e Entrega Contínua com **Jenkins** e **Docker**.
-  * **Mensageria:** Implementar funcionalidades assíncronas (como envio de notificações) usando **RabbitMQ**.
+      * Execute o comando `docker-compose up --build`.
+      * A primeira execução pode demorar, pois o Docker fará o download das imagens e a construção da sua aplicação.
+      * Este comando irá criar dois containers: um para a sua API e outro para o PostgreSQL.
+      * **Importante:** Se a porta 5432 estiver em uso, pare o serviço do PostgreSQL que está rodando diretamente na sua máquina.
+
+### Como Usar a API
+
+A API estará disponível em `http://localhost:8080`. Você pode usar o **Postman** ou o **Swagger UI** para interagir com ela.
+
+  * **Documentação da API (Swagger UI):**
+
+      * Acesse `http://localhost:8080/swagger-ui.html` no seu navegador. Você poderá visualizar e testar todos os endpoints da sua API de forma interativa.
+
+  * **Fluxo Básico via Postman:**
+
+    1.  **Registrar:** `POST` para `http://localhost:8080/api/auth/register` com `username`, `email` e `password`.
+    2.  **Login:** `POST` para `http://localhost:8080/api/auth/login` com `username` e `password`. O corpo da resposta conterá o **JWT** necessário.
+    3.  **Criar um Post (Protegido):** `POST` para `http://localhost:8080/api/posts` com o **JWT** no cabeçalho `Authorization: Bearer <seu_token>`.
