@@ -47,4 +47,22 @@ public class Post {
     @Builder.Default
     @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<Comment> comments = new HashSet<>();
+
+    public void addLike(User user) {
+        boolean alreadyLiked = this.likes.stream()
+                .anyMatch(like -> like.getAuthor().getId().equals(user.getId()));
+
+        if (!alreadyLiked) {
+            this.likes.add(new Like(this, user));
+        }
+    }
+
+
+    public void removeLike(User user) {
+        this.likes.removeIf(like -> like.getAuthor().getId().equals(user.getId()));
+    }
+
+    public void addComment(User author, String content) {
+        this.comments.add(new Comment(this, author, content));
+    }
 }
