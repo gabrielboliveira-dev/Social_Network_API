@@ -65,6 +65,17 @@ public class User implements UserDetails {
     @ManyToMany(mappedBy = "followers")
     private Set<User> following = new HashSet<>();
 
+    public void follow(User userToFollow) {
+        this.following.add(userToFollow);
+        userToFollow.getFollowers().add(this);
+    }
+
+    public void unfollow(User userToUnfollow) {
+        this.following.remove(userToUnfollow);
+        userToUnfollow.getFollowers().remove(this);
+    }
+
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return Collections.emptyList();

@@ -1,6 +1,5 @@
 package com.example.socialnetwork.infrastructure.security;
 
-import com.example.socialnetwork.application.service.UserServiceImpl;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;

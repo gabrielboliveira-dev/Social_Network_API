@@ -2,6 +2,7 @@ package com.example.socialnetwork.domain.repository;
 
 import com.example.socialnetwork.domain.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
+import java.util.List; // ADIÇÃO: Import para o novo método
 import java.util.Optional;
 import java.util.UUID;
 
@@ -10,4 +11,6 @@ public interface UserRepository extends JpaRepository<User, UUID> {
     Optional<User> findByEmail(String email);
     boolean existsByUsername(String username);
     boolean existsByEmail(String email);
+
+    List<User> findByUsernameContainingIgnoreCase(String username);
 }

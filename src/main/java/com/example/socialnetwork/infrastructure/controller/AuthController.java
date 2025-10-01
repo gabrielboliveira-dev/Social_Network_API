@@ -1,12 +1,15 @@
 package com.example.socialnetwork.infrastructure.controller;
 
-import com.example.socialnetwork.application.service.UserService;
+// MUDANÇA: Imports para o nosso novo caso de uso e DTO de resposta.
+import com.example.socialnetwork.application.usecase.user.RegisterUserUseCase;
 import com.example.socialnetwork.domain.entity.User;
 import com.example.socialnetwork.infrastructure.dto.LoginRequest;
 import com.example.socialnetwork.infrastructure.dto.LoginResponse;
 import com.example.socialnetwork.infrastructure.dto.UserRegistrationRequest;
+import com.example.socialnetwork.infrastructure.dto.UserResponse;
 import com.example.socialnetwork.infrastructure.security.JwtTokenUtil;
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -20,28 +23,25 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/api/auth")
+@RequiredArgsConstructor
 public class AuthController {
 
     private final AuthenticationManager authenticationManager;
     private final JwtTokenUtil jwtTokenUtil;
-    private final UserService userService;
-
-    public AuthController(AuthenticationManager authenticationManager, JwtTokenUtil jwtTokenUtil, UserService userService) {
-        this.authenticationManager = authenticationManager;
-        this.jwtTokenUtil = jwtTokenUtil;
-        this.userService = userService;
-    }
+    private final RegisterUserUseCase registerUserUseCase;
 
     @PostMapping("/register")
     public ResponseEntity<?> registerUser(@Valid @RequestBody UserRegistrationRequest request) {
         try {
-            User newUser = User.builder()
-                    .username(request.getUsername())
-                    .password(request.getPassword())
-                    .email(request.getEmail())
-                    .build();
-            User registeredUser = userService.registerUser(newUser);
-            return new ResponseEntity<>(registeredUser, HttpStatus.CREATED);
+            var command = new RegisterUserUseCase.RegisterUserCommand(
+                    request.getUsername(),
+                    request.getEmail(),
+                    request.getPassword()
+            );
+
+            User registeredUser = registerUserUseCase.handle(command);
+
+            return new ResponseEntity<>(convertToDto(registeredUser), HttpStatus.CREATED);
         } catch (IllegalStateException e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.CONFLICT);
         }
@@ -59,5 +59,13 @@ public class AuthController {
         } catch (Exception e) {
             return new ResponseEntity<>("Invalid username or password", HttpStatus.UNAUTHORIZED);
         }
+    }
+
+    private UserResponse convertToDto(User user) {
+        UserResponse dto = new UserResponse();
+        dto.setId(user.getId());
+        dto.setUsername(user.getUsername());
+        dto.setEmail(user.getEmail());
+        return dto;
     }
 }

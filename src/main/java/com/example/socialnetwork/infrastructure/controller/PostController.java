@@ -4,7 +4,6 @@ import com.example.socialnetwork.application.usecase.comment.DeleteCommentUseCas
 import com.example.socialnetwork.application.usecase.post.*;
 
 import com.example.socialnetwork.application.service.FileStorageService;
-import com.example.socialnetwork.application.service.UserService;
 import com.example.socialnetwork.domain.entity.Comment;
 import com.example.socialnetwork.domain.entity.Post;
 import com.example.socialnetwork.domain.entity.User;
@@ -24,7 +23,6 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
