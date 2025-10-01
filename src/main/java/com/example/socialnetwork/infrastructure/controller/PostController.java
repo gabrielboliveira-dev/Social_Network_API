@@ -1,8 +1,8 @@
 package com.example.socialnetwork.infrastructure.controller;
 
+import com.example.socialnetwork.application.usecase.user.FindUserByUsernameUseCase;
 import com.example.socialnetwork.application.usecase.comment.DeleteCommentUseCase;
 import com.example.socialnetwork.application.usecase.post.*;
-
 import com.example.socialnetwork.application.service.FileStorageService;
 import com.example.socialnetwork.domain.entity.Comment;
 import com.example.socialnetwork.domain.entity.Post;
@@ -41,9 +41,8 @@ public class PostController {
     private final AddCommentUseCase addCommentUseCase;
     private final DeleteCommentUseCase deleteCommentUseCase;
 
-    private final UserService userService;
+    private final FindUserByUsernameUseCase findUserByUsernameUseCase;
     private final FileStorageService fileStorageService;
-
 
     @PostMapping
     public ResponseEntity<PostResponse> createPost(@Valid @RequestBody CreatePostRequest request, Authentication authentication) {
@@ -56,23 +55,19 @@ public class PostController {
     @PostMapping("/{postId}/uploadImage")
     public ResponseEntity<ImageUploadResponse> uploadPostImage(@PathVariable UUID postId, @RequestParam("file") MultipartFile file, Authentication authentication) {
         User currentUser = findUserOrThrow(authentication);
-
         try {
             String filename = fileStorageService.save(file);
             var command = new UpdatePostImageUrlUseCase.UpdatePostImageUrlCommand(postId, filename, currentUser);
             updatePostImageUrlUseCase.handle(command);
-
             String fileDownloadUri = ServletUriComponentsBuilder.fromCurrentContextPath()
                     .path("/api/images/")
                     .path(filename)
                     .toUriString();
-
             ImageUploadResponse response = new ImageUploadResponse();
             response.setFileName(filename);
             response.setFileDownloadUri(fileDownloadUri);
             response.setFileType(file.getContentType());
             response.setSize(file.getSize());
-
             return ResponseEntity.ok(response);
         } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
@@ -168,7 +163,7 @@ public class PostController {
 
     private User findUserOrThrow(Authentication authentication) {
         UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-        return userService.findUserByUsername(userDetails.getUsername())
+        return findUserByUsernameUseCase.handle(userDetails.getUsername())
                 .orElseThrow(() -> new IllegalStateException("Authenticated user not found in database."));
     }
 

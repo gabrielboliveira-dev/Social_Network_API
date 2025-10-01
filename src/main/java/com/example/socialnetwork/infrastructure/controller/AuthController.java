@@ -1,6 +1,5 @@
 package com.example.socialnetwork.infrastructure.controller;
 
-// MUDANÇA: Imports para o nosso novo caso de uso e DTO de resposta.
 import com.example.socialnetwork.application.usecase.user.RegisterUserUseCase;
 import com.example.socialnetwork.domain.entity.User;
 import com.example.socialnetwork.infrastructure.dto.LoginRequest;
