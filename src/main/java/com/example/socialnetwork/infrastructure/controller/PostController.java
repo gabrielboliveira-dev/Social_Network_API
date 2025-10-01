@@ -1,7 +1,9 @@
 package com.example.socialnetwork.infrastructure.controller;
 
+import com.example.socialnetwork.application.usecase.comment.DeleteCommentUseCase;
+import com.example.socialnetwork.application.usecase.post.*;
+
 import com.example.socialnetwork.application.service.FileStorageService;
-import com.example.socialnetwork.application.service.PostService;
 import com.example.socialnetwork.application.service.UserService;
 import com.example.socialnetwork.domain.entity.Comment;
 import com.example.socialnetwork.domain.entity.Post;
@@ -12,6 +14,7 @@ import com.example.socialnetwork.infrastructure.dto.CreatePostRequest;
 import com.example.socialnetwork.infrastructure.dto.ImageUploadResponse;
 import com.example.socialnetwork.infrastructure.dto.PostResponse;
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -27,43 +30,39 @@ import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/posts")
+@RequiredArgsConstructor
 public class PostController {
 
-    private final PostService postService;
+    private final CreatePostUseCase createPostUseCase;
+    private final UpdatePostImageUrlUseCase updatePostImageUrlUseCase;
+    private final FindPostByIdUseCase findPostByIdUseCase;
+    private final FindAllPostsUseCase findAllPostsUseCase;
+    private final DeletePostUseCase deletePostUseCase;
+    private final LikePostUseCase likePostUseCase;
+    private final UnlikePostUseCase unlikePostUseCase;
+    private final AddCommentUseCase addCommentUseCase;
+    private final DeleteCommentUseCase deleteCommentUseCase;
+
     private final UserService userService;
     private final FileStorageService fileStorageService;
 
-    public PostController(PostService postService, UserService userService, FileStorageService fileStorageService) {
-        this.postService = postService;
-        this.userService = userService;
-        this.fileStorageService = fileStorageService;
-    }
 
     @PostMapping
     public ResponseEntity<PostResponse> createPost(@Valid @RequestBody CreatePostRequest request, Authentication authentication) {
-        UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-        Optional<User> author = userService.findUserByUsername(userDetails.getUsername());
-
-        if (author.isEmpty()) {
-            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
-        }
-
-        Post newPost = postService.createPost(request.getContent(), author.get());
+        User author = findUserOrThrow(authentication);
+        var command = new CreatePostUseCase.CreatePostCommand(request.getContent(), author);
+        Post newPost = createPostUseCase.handle(command);
         return new ResponseEntity<>(convertToDto(newPost), HttpStatus.CREATED);
     }
 
     @PostMapping("/{postId}/uploadImage")
     public ResponseEntity<ImageUploadResponse> uploadPostImage(@PathVariable UUID postId, @RequestParam("file") MultipartFile file, Authentication authentication) {
-        UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-        Optional<User> user = userService.findUserByUsername(userDetails.getUsername());
-
-        if (user.isEmpty()) {
-            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
-        }
+        User currentUser = findUserOrThrow(authentication);
 
         try {
             String filename = fileStorageService.save(file);
-            postService.updatePostImageUrl(postId, filename, user.get());
+            var command = new UpdatePostImageUrlUseCase.UpdatePostImageUrlCommand(postId, filename, currentUser);
+            updatePostImageUrlUseCase.handle(command);
 
             String fileDownloadUri = ServletUriComponentsBuilder.fromCurrentContextPath()
                     .path("/api/images/")
@@ -84,7 +83,7 @@ public class PostController {
 
     @GetMapping("/{id}")
     public ResponseEntity<PostResponse> getPostById(@PathVariable UUID id) {
-        return postService.findPostById(id)
+        return findPostByIdUseCase.handle(id)
                 .map(this::convertToDto)
                 .map(dto -> new ResponseEntity<>(dto, HttpStatus.OK))
                 .orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
@@ -92,7 +91,7 @@ public class PostController {
 
     @GetMapping
     public ResponseEntity<List<PostResponse>> getAllPosts() {
-        List<Post> posts = postService.findAllPosts();
+        List<Post> posts = findAllPostsUseCase.handle();
         List<PostResponse> postDtos = posts.stream()
                 .map(this::convertToDto)
                 .collect(Collectors.toList());
@@ -101,15 +100,10 @@ public class PostController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deletePost(@PathVariable UUID id, Authentication authentication) {
-        UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-        Optional<User> currentUser = userService.findUserByUsername(userDetails.getUsername());
-
-        if (currentUser.isEmpty()) {
-            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
-        }
-
+        User currentUser = findUserOrThrow(authentication);
         try {
-            postService.deletePost(id, currentUser.get());
+            var command = new DeletePostUseCase.DeletePostCommand(id, currentUser);
+            deletePostUseCase.handle(command);
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         } catch (IllegalArgumentException e) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -120,15 +114,10 @@ public class PostController {
 
     @PostMapping("/{postId}/like")
     public ResponseEntity<Void> likePost(@PathVariable UUID postId, Authentication authentication) {
-        UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-        Optional<User> user = userService.findUserByUsername(userDetails.getUsername());
-
-        if (user.isEmpty()) {
-            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
-        }
-
+        User currentUser = findUserOrThrow(authentication);
         try {
-            postService.likePost(postId, user.get());
+            var command = new LikePostUseCase.LikePostCommand(postId, currentUser);
+            likePostUseCase.handle(command);
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         } catch (IllegalArgumentException e) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -139,15 +128,10 @@ public class PostController {
 
     @DeleteMapping("/{postId}/like")
     public ResponseEntity<Void> unlikePost(@PathVariable UUID postId, Authentication authentication) {
-        UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-        Optional<User> user = userService.findUserByUsername(userDetails.getUsername());
-
-        if (user.isEmpty()) {
-            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
-        }
-
+        User currentUser = findUserOrThrow(authentication);
         try {
-            postService.unlikePost(postId, user.get());
+            var command = new UnlikePostUseCase.UnlikePostCommand(postId, currentUser);
+            unlikePostUseCase.handle(command);
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         } catch (IllegalArgumentException e) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -160,15 +144,10 @@ public class PostController {
     public ResponseEntity<CommentResponse> addComment(@PathVariable UUID postId,
                                                       @Valid @RequestBody AddCommentRequest request,
                                                       Authentication authentication) {
-        UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-        Optional<User> author = userService.findUserByUsername(userDetails.getUsername());
-
-        if (author.isEmpty()) {
-            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
-        }
-
+        User author = findUserOrThrow(authentication);
         try {
-            Comment newComment = postService.addComment(postId, request.getContent(), author.get());
+            var command = new AddCommentUseCase.AddCommentCommand(postId, request.getContent(), author);
+            Comment newComment = addCommentUseCase.handle(command);
             return new ResponseEntity<>(convertToDto(newComment), HttpStatus.CREATED);
         } catch (IllegalArgumentException e) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -177,21 +156,22 @@ public class PostController {
 
     @DeleteMapping("/comment/{commentId}")
     public ResponseEntity<Void> deleteComment(@PathVariable UUID commentId, Authentication authentication) {
-        UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-        Optional<User> currentUser = userService.findUserByUsername(userDetails.getUsername());
-
-        if (currentUser.isEmpty()) {
-            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
-        }
-
+        User currentUser = findUserOrThrow(authentication);
         try {
-            postService.deleteComment(commentId, currentUser.get());
+            var command = new DeleteCommentUseCase.DeleteCommentCommand(commentId, currentUser);
+            deleteCommentUseCase.handle(command);
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         } catch (IllegalArgumentException e) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         } catch (IllegalStateException e) {
             return new ResponseEntity<>(HttpStatus.FORBIDDEN);
         }
+    }
+
+    private User findUserOrThrow(Authentication authentication) {
+        UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+        return userService.findUserByUsername(userDetails.getUsername())
+                .orElseThrow(() -> new IllegalStateException("Authenticated user not found in database."));
     }
 
     private PostResponse convertToDto(Post post) {

@@ -50,19 +50,36 @@ public class Post {
 
     public void addLike(User user) {
         boolean alreadyLiked = this.likes.stream()
-                .anyMatch(like -> like.getAuthor().getId().equals(user.getId()));
+                .anyMatch(like -> like.getUser().getId().equals(user.getId()));
 
         if (!alreadyLiked) {
             this.likes.add(new Like(this, user));
         }
     }
 
-
     public void removeLike(User user) {
-        this.likes.removeIf(like -> like.getAuthor().getId().equals(user.getId()));
+        this.likes.removeIf(like -> like.getUser().getId().equals(user.getId()));
     }
 
-    public void addComment(User author, String content) {
-        this.comments.add(new Comment(this, author, content));
+    public Comment addComment(User author, String content) {
+        Comment newComment = new Comment(this, author, content);
+        this.comments.add(newComment);
+        return newComment;
+    }
+
+    public void updateContent(String newContent, User currentUser) {
+        verifyOwnership(currentUser);
+        this.content = newContent;
+    }
+
+    public void verifyOwnership(User currentUser) {
+        if (this.author == null || currentUser == null || !this.author.getId().equals(currentUser.getId())) {
+            throw new IllegalStateException("User is not authorized to perform this action on the post.");
+        }
+    }
+
+    public void updateImageUrl(String newImageUrl, User currentUser) {
+        verifyOwnership(currentUser);
+        this.imageUrl = newImageUrl;
     }
 }

@@ -38,4 +38,16 @@ public class Comment {
     @UpdateTimestamp
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
+
+    public void verifyOwnership(User currentUser) {
+        if (this.author == null || currentUser == null || !this.author.getId().equals(currentUser.getId())) {
+            throw new IllegalStateException("User is not authorized to delete this comment.");
+        }
+    }
+
+    public Comment(Post post, User author, String content) {
+        this.post = post;
+        this.author = author;
+        this.content = content;
+    }
 }
