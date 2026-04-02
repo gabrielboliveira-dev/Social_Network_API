@@ -14,6 +14,8 @@ import com.example.socialnetwork.infrastructure.dto.ImageUploadResponse;
 import com.example.socialnetwork.infrastructure.dto.PostResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -27,7 +29,7 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 @RestController
-@RequestMapping("/api/posts")
+@RequestMapping("/api/v1/posts")
 @RequiredArgsConstructor
 public class PostController {
 
@@ -60,7 +62,7 @@ public class PostController {
             var command = new UpdatePostImageUrlUseCase.UpdatePostImageUrlCommand(postId, filename, currentUser);
             updatePostImageUrlUseCase.handle(command);
             String fileDownloadUri = ServletUriComponentsBuilder.fromCurrentContextPath()
-                    .path("/api/images/")
+                    .path("/api/v1/images/")
                     .path(filename)
                     .toUriString();
             ImageUploadResponse response = new ImageUploadResponse();
@@ -83,54 +85,37 @@ public class PostController {
     }
 
     @GetMapping
-    public ResponseEntity<List<PostResponse>> getAllPosts() {
-        List<Post> posts = findAllPostsUseCase.handle();
-        List<PostResponse> postDtos = posts.stream()
-                .map(this::convertToDto)
-                .collect(Collectors.toList());
+    public ResponseEntity<Page<PostResponse>> getAllPosts(Pageable pageable) {
+        Page<Post> posts = findAllPostsUseCase.handle(pageable);
+        Page<PostResponse> postDtos = posts.map(this::convertToDto);
         return new ResponseEntity<>(postDtos, HttpStatus.OK);
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deletePost(@PathVariable UUID id, Authentication authentication) {
         User currentUser = findUserOrThrow(authentication);
-        try {
-            var command = new DeletePostUseCase.DeletePostCommand(id, currentUser);
-            deletePostUseCase.handle(command);
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-        } catch (IllegalArgumentException e) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        } catch (IllegalStateException e) {
-            return new ResponseEntity<>(HttpStatus.FORBIDDEN);
-        }
+        
+        var command = new DeletePostUseCase.DeletePostCommand(id, currentUser);
+        deletePostUseCase.handle(command);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
     @PostMapping("/{postId}/like")
     public ResponseEntity<Void> likePost(@PathVariable UUID postId, Authentication authentication) {
         User currentUser = findUserOrThrow(authentication);
-        try {
-            var command = new LikePostUseCase.LikePostCommand(postId, currentUser);
-            likePostUseCase.handle(command);
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-        } catch (IllegalArgumentException e) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        } catch (IllegalStateException e) {
-            return new ResponseEntity<>(HttpStatus.CONFLICT);
-        }
+        
+        var command = new LikePostUseCase.LikePostCommand(postId, currentUser);
+        likePostUseCase.handle(command);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
     @DeleteMapping("/{postId}/like")
     public ResponseEntity<Void> unlikePost(@PathVariable UUID postId, Authentication authentication) {
         User currentUser = findUserOrThrow(authentication);
-        try {
-            var command = new UnlikePostUseCase.UnlikePostCommand(postId, currentUser);
-            unlikePostUseCase.handle(command);
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-        } catch (IllegalArgumentException e) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        } catch (IllegalStateException e) {
-            return new ResponseEntity<>(HttpStatus.CONFLICT);
-        }
+        
+        var command = new UnlikePostUseCase.UnlikePostCommand(postId, currentUser);
+        unlikePostUseCase.handle(command);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
     @PostMapping("/{postId}/comment")
@@ -138,27 +123,19 @@ public class PostController {
                                                       @Valid @RequestBody AddCommentRequest request,
                                                       Authentication authentication) {
         User author = findUserOrThrow(authentication);
-        try {
-            var command = new AddCommentUseCase.AddCommentCommand(postId, request.getContent(), author);
-            Comment newComment = addCommentUseCase.handle(command);
-            return new ResponseEntity<>(convertToDto(newComment), HttpStatus.CREATED);
-        } catch (IllegalArgumentException e) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
+        
+        var command = new AddCommentUseCase.AddCommentCommand(postId, request.getContent(), author);
+        Comment newComment = addCommentUseCase.handle(command);
+        return new ResponseEntity<>(convertToDto(newComment), HttpStatus.CREATED);
     }
 
     @DeleteMapping("/comment/{commentId}")
     public ResponseEntity<Void> deleteComment(@PathVariable UUID commentId, Authentication authentication) {
         User currentUser = findUserOrThrow(authentication);
-        try {
-            var command = new DeleteCommentUseCase.DeleteCommentCommand(commentId, currentUser);
-            deleteCommentUseCase.handle(command);
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-        } catch (IllegalArgumentException e) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        } catch (IllegalStateException e) {
-            return new ResponseEntity<>(HttpStatus.FORBIDDEN);
-        }
+        
+        var command = new DeleteCommentUseCase.DeleteCommentCommand(commentId, currentUser);
+        deleteCommentUseCase.handle(command);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
     private User findUserOrThrow(Authentication authentication) {
@@ -171,8 +148,18 @@ public class PostController {
         PostResponse dto = new PostResponse();
         dto.setId(post.getId());
         dto.setContent(post.getContent());
-        dto.setAuthor(post.getAuthor());
+        if (post.getAuthor() != null) {
+            dto.setAuthorUsername(post.getAuthor().getUsername());
+        }
         dto.setCreatedAt(post.getCreatedAt());
+        if (post.getLikes() != null) {
+            dto.setLikeCount(post.getLikes().size());
+        }
+        if (post.getComments() != null) {
+            dto.setComments(post.getComments().stream()
+                .map(this::convertToDto)
+                .collect(Collectors.toList()));
+        }
         return dto;
     }
 
@@ -180,7 +167,9 @@ public class PostController {
         CommentResponse dto = new CommentResponse();
         dto.setId(comment.getId());
         dto.setContent(comment.getContent());
-        dto.setAuthor(comment.getAuthor());
+        if (comment.getAuthor() != null) {
+            dto.setAuthorUsername(comment.getAuthor().getUsername());
+        }
         dto.setCreatedAt(comment.getCreatedAt());
         return dto;
     }

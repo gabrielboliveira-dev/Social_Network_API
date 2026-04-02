@@ -1,6 +1,5 @@
 package com.example.socialnetwork.infrastructure.controller;
 
-// MUDANÇA: Imports para os nossos novos casos de uso e DTOs.
 import com.example.socialnetwork.application.usecase.user.FindUserByIdUseCase;
 import com.example.socialnetwork.application.usecase.user.FindUserByUsernameUseCase;
 import com.example.socialnetwork.application.usecase.user.FollowUserUseCase;
@@ -22,7 +21,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/api/users")
+@RequestMapping("/api/v1/users")
 @RequiredArgsConstructor
 public class UserController {
 
@@ -53,7 +52,7 @@ public class UserController {
             updateUserProfileImageUseCase.handle(command);
 
             String fileDownloadUri = ServletUriComponentsBuilder.fromCurrentContextPath()
-                    .path("/api/images/")
+                    .path("/api/v1/images/")
                     .path(filename)
                     .toUriString();
 
@@ -73,13 +72,9 @@ public class UserController {
     public ResponseEntity<Void> followUser(@PathVariable UUID followingId, Authentication authentication) {
         User currentUser = findUserOrThrow(authentication);
 
-        try {
-            var command = new FollowUserUseCase.FollowUserCommand(currentUser.getId(), followingId);
-            followUserUseCase.handle(command);
-            return ResponseEntity.ok().build();
-        } catch (IllegalArgumentException e) {
-            return ResponseEntity.badRequest().body(null);
-        }
+        var command = new FollowUserUseCase.FollowUserCommand(currentUser.getId(), followingId);
+        followUserUseCase.handle(command);
+        return ResponseEntity.ok().build();
     }
 
 
@@ -88,13 +83,9 @@ public class UserController {
     public ResponseEntity<Void> unfollowUser(@PathVariable UUID followingId, Authentication authentication) {
         User currentUser = findUserOrThrow(authentication);
 
-        try {
-            var command = new UnfollowUserUseCase.UnfollowUserCommand(currentUser.getId(), followingId);
-            unfollowUserUseCase.handle(command);
-            return ResponseEntity.ok().build();
-        } catch (IllegalArgumentException e) {
-            return ResponseEntity.badRequest().body(null);
-        }
+        var command = new UnfollowUserUseCase.UnfollowUserCommand(currentUser.getId(), followingId);
+        unfollowUserUseCase.handle(command);
+        return ResponseEntity.ok().build();
     }
 
     private User findUserOrThrow(Authentication authentication) {

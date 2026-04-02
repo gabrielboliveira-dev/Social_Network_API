@@ -21,7 +21,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/api/auth")
+@RequestMapping("/api/v1/auth")
 @RequiredArgsConstructor
 public class AuthController {
 
@@ -31,33 +31,25 @@ public class AuthController {
 
     @PostMapping("/register")
     public ResponseEntity<?> registerUser(@Valid @RequestBody UserRegistrationRequest request) {
-        try {
-            var command = new RegisterUserUseCase.RegisterUserCommand(
-                    request.getUsername(),
-                    request.getEmail(),
-                    request.getPassword()
-            );
+        var command = new RegisterUserUseCase.RegisterUserCommand(
+                request.getUsername(),
+                request.getEmail(),
+                request.getPassword()
+        );
 
-            User registeredUser = registerUserUseCase.handle(command);
+        User registeredUser = registerUserUseCase.handle(command);
 
-            return new ResponseEntity<>(convertToDto(registeredUser), HttpStatus.CREATED);
-        } catch (IllegalStateException e) {
-            return new ResponseEntity<>(e.getMessage(), HttpStatus.CONFLICT);
-        }
+        return new ResponseEntity<>(convertToDto(registeredUser), HttpStatus.CREATED);
     }
 
     @PostMapping("/login")
     public ResponseEntity<?> loginUser(@Valid @RequestBody LoginRequest request) {
-        try {
-            Authentication authentication = authenticationManager.authenticate(
-                    new UsernamePasswordAuthenticationToken(request.getUsername(), request.getPassword())
-            );
-            UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-            String token = jwtTokenUtil.generateToken(userDetails);
-            return ResponseEntity.ok(new LoginResponse(token));
-        } catch (Exception e) {
-            return new ResponseEntity<>("Invalid username or password", HttpStatus.UNAUTHORIZED);
-        }
+        Authentication authentication = authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(request.getUsername(), request.getPassword())
+        );
+        UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+        String token = jwtTokenUtil.generateToken(userDetails);
+        return ResponseEntity.ok(new LoginResponse(token));
     }
 
     private UserResponse convertToDto(User user) {
