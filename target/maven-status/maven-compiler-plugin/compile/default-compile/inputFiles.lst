@@ -1,8 +1,9 @@
 C:\Users\Gabri\OneDrive\Área de Trabalho\Programação\Social_Network_API\src\main\java\com\example\socialnetwork\application\service\FileStorageService.java
 C:\Users\Gabri\OneDrive\Área de Trabalho\Programação\Social_Network_API\src\main\java\com\example\socialnetwork\application\service\FileStorageServiceImpl.java
+C:\Users\Gabri\OneDrive\Área de Trabalho\Programação\Social_Network_API\src\main\java\com\example\socialnetwork\application\usecase\comment\AddCommentUseCase.java
 C:\Users\Gabri\OneDrive\Área de Trabalho\Programação\Social_Network_API\src\main\java\com\example\socialnetwork\application\usecase\comment\DeleteCommentUseCase.java
+C:\Users\Gabri\OneDrive\Área de Trabalho\Programação\Social_Network_API\src\main\java\com\example\socialnetwork\application\usecase\comment\impl\AddCommentUseCaseImpl.java
 C:\Users\Gabri\OneDrive\Área de Trabalho\Programação\Social_Network_API\src\main\java\com\example\socialnetwork\application\usecase\comment\impl\DeleteCommentUseCaseImpl.java
-C:\Users\Gabri\OneDrive\Área de Trabalho\Programação\Social_Network_API\src\main\java\com\example\socialnetwork\application\usecase\post\AddCommentUseCase.java
 C:\Users\Gabri\OneDrive\Área de Trabalho\Programação\Social_Network_API\src\main\java\com\example\socialnetwork\application\usecase\post\CreatePostUseCase.java
 C:\Users\Gabri\OneDrive\Área de Trabalho\Programação\Social_Network_API\src\main\java\com\example\socialnetwork\application\usecase\post\DeletePostUseCase.java
 C:\Users\Gabri\OneDrive\Área de Trabalho\Programação\Social_Network_API\src\main\java\com\example\socialnetwork\application\usecase\post\FindAllPostsUseCase.java
@@ -42,6 +43,7 @@ C:\Users\Gabri\OneDrive\Área de Trabalho\Programação\Social_Network_API\src\m
 C:\Users\Gabri\OneDrive\Área de Trabalho\Programação\Social_Network_API\src\main\java\com\example\socialnetwork\domain\repository\UserRepository.java
 C:\Users\Gabri\OneDrive\Área de Trabalho\Programação\Social_Network_API\src\main\java\com\example\socialnetwork\infrastructure\config\SecurityConfig.java
 C:\Users\Gabri\OneDrive\Área de Trabalho\Programação\Social_Network_API\src\main\java\com\example\socialnetwork\infrastructure\controller\AuthController.java
+C:\Users\Gabri\OneDrive\Área de Trabalho\Programação\Social_Network_API\src\main\java\com\example\socialnetwork\infrastructure\controller\GlobalExceptionHandler.java
 C:\Users\Gabri\OneDrive\Área de Trabalho\Programação\Social_Network_API\src\main\java\com\example\socialnetwork\infrastructure\controller\ImageController.java
 C:\Users\Gabri\OneDrive\Área de Trabalho\Programação\Social_Network_API\src\main\java\com\example\socialnetwork\infrastructure\controller\PostController.java
 C:\Users\Gabri\OneDrive\Área de Trabalho\Programação\Social_Network_API\src\main\java\com\example\socialnetwork\infrastructure\controller\UserController.java
@@ -51,6 +53,7 @@ C:\Users\Gabri\OneDrive\Área de Trabalho\Programação\Social_Network_API\src\m
 C:\Users\Gabri\OneDrive\Área de Trabalho\Programação\Social_Network_API\src\main\java\com\example\socialnetwork\infrastructure\dto\ImageUploadResponse.java
 C:\Users\Gabri\OneDrive\Área de Trabalho\Programação\Social_Network_API\src\main\java\com\example\socialnetwork\infrastructure\dto\LoginRequest.java
 C:\Users\Gabri\OneDrive\Área de Trabalho\Programação\Social_Network_API\src\main\java\com\example\socialnetwork\infrastructure\dto\LoginResponse.java
+C:\Users\Gabri\OneDrive\Área de Trabalho\Programação\Social_Network_API\src\main\java\com\example\socialnetwork\infrastructure\dto\mapper\PostMapper.java
 C:\Users\Gabri\OneDrive\Área de Trabalho\Programação\Social_Network_API\src\main\java\com\example\socialnetwork\infrastructure\dto\PostResponse.java
 C:\Users\Gabri\OneDrive\Área de Trabalho\Programação\Social_Network_API\src\main\java\com\example\socialnetwork\infrastructure\dto\UserRegistrationRequest.java
 C:\Users\Gabri\OneDrive\Área de Trabalho\Programação\Social_Network_API\src\main\java\com\example\socialnetwork\infrastructure\dto\UserResponse.java

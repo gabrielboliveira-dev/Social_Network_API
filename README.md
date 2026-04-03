@@ -14,20 +14,20 @@ A API fornece as seguintes funcionalidades principais, todas protegidas por aute
 
   * **Autenticação e Autorização:**
       * Registro de novos usuários com validação de dados.
-      * Login com geração de **JWT (JSON Web Token)** para autenticação.
-      * Proteção de endpoints, permitindo acesso apenas a usuários autenticados.
+      * Login com geração de **JWT (JSON Web Token)** para autenticação segura.
+      * Proteção de endpoints, permitindo acesso apenas a usuários autenticados e autorizados.
 
   * **Gestão de Usuários:**
-      * Visualização de perfis de usuário.
-      * Funcionalidade de "seguir" e "deixar de seguir" outros usuários.
-      * **Upload de Imagem de Perfil** com armazenamento local.
+      * Criação e visualização de perfis de usuário.
+      * Funcionalidade de "seguir" e "deixar de seguir" outros usuários, estabelecendo relações sociais.
+      * **Upload de Imagem de Perfil** com armazenamento local, permitindo personalização.
 
   * **Gestão de Posts:**
-      * Criação, visualização e exclusão de posts.
-      * **Upload de Imagem para Posts** com armazenamento local.
-      * **Adicionar e Remover "gostei" (likes)** em posts.
-      * **Adicionar e Excluir comentários** em posts.
-      * Paginação na listagem de posts para melhor performance.
+      * Criação, visualização, atualização e exclusão de posts.
+      * **Upload de Imagem para Posts** com armazenamento local, enriquecendo o conteúdo.
+      * **Adicionar e Remover "gostei" (likes)** em posts, para interação dos usuários.
+      * **Adicionar e Excluir comentários** em posts, promovendo discussões.
+      * Paginação na listagem de posts para melhor performance e experiência do usuário.
 
 ### Tecnologias Utilizadas
 
@@ -38,8 +38,9 @@ A aplicação utiliza as seguintes tecnologias, que foram configuradas para roda
   * **Persistência:** PostgreSQL (banco de dados) e Spring Data JPA/Hibernate (acesso aos dados)
   * **Segurança:** Spring Security com JWT e BCrypt (criptografia de senhas)
   * **Build:** Maven
-  * **Containerização:** Docker e Docker Compose
-  * **Documentação da API:** Swagger/OpenAPI
+  * **Containerização:** Docker e Docker Compose (para ambiente de desenvolvimento e produção)
+  * **Testes:** JUnit 5, Mockito, Spring Boot Test, Testcontainers (para testes de integração com PostgreSQL)
+  * **Documentação da API:** Swagger/OpenAPI (para exploração interativa da API)
   * **Boas Práticas:** Arquitetura Limpa, SOLID, DTOs e Jakarta Bean Validation, Tratamento Global de Exceções.
 
 ### Estrutura do Projeto
@@ -54,9 +55,9 @@ social-network-api/
 │           └── com/
 │               └── example/
 │                   └── socialnetwork/
-│                       ├── domain/           <-- Entidades e Interfaces de Repositório
-│                       ├── application/      <-- Lógica de Negócio (Serviços)
-│                       └── infrastructure/   <-- API, Configurações de Segurança e DTOs
+│                       ├── domain/           <-- Entidades de Negócio e Interfaces de Repositório
+│                       ├── application/      <-- Lógica de Negócio (Casos de Uso/Serviços)
+│                       └── infrastructure/   <-- API (Controladores, DTOs), Configurações de Segurança e Persistência
 ├── Dockerfile                        <-- Instruções para construir a imagem da aplicação
 ├── docker-compose.yml                <-- Orquestração da aplicação e do banco de dados
 └── README.md
@@ -72,18 +73,18 @@ Para executar a aplicação e o banco de dados localmente em containers, siga es
 
 2.  **Clone o Repositório e Navegue até a Pasta:**
     ```bash
-    git clone https://github.com/SEU_USUARIO/social-network-api.git
+    git clone https://github.com/gabrielboliveira-dev/Social_Network_API
     cd social-network-api
     ```
 
-3.  **Configurações de Segurança (Variáveis de Ambiente):**
-    As credenciais não ficam expostas no código. Ao invés disso, utilizamos variáveis de ambiente no docker-compose. Certifique-se de preencher a variável JWT_SECRET de forma adequada no arquivo `docker-compose.yml` para garantir que os tokens gerados sejam seguros. As configurações para rodar o banco localmente também podem ser editadas lá, ou caso execute localmente fora do docker, configurando as variáveis DB_URL, DB_USERNAME, DB_PASSWORD, JWT_SECRET e JWT_EXPIRATION, e o fallback para o `application.properties` cuidará disso.
+3.  **Configurações de Ambiente (Variáveis de Ambiente):**
+    As credenciais e configurações sensíveis não ficam expostas no código. Utilizamos variáveis de ambiente, principalmente no `docker-compose.yml`. Certifique-se de preencher a variável `JWT_SECRET` de forma adequada para garantir que os tokens gerados sejam seguros. As configurações para o banco de dados (`DB_URL`, `DB_USERNAME`, `DB_PASSWORD`) também são definidas via variáveis de ambiente no `docker-compose.yml`.
 
 4.  **Construir e Iniciar os Containers:**
       * Execute o comando `docker-compose up --build`.
       * A primeira execução pode demorar, pois o Docker fará o download das imagens e a construção da sua aplicação.
       * Este comando irá criar dois containers: um para a sua API e outro para o PostgreSQL.
-      * **Importante:** Se a porta 5432 estiver em uso, pare o serviço do PostgreSQL que está rodando diretamente na sua máquina.
+      * **Importante:** Se a porta 5432 estiver em uso, verifique se há outro serviço PostgreSQL rodando em sua máquina e pare-o, ou altere a porta no `docker-compose.yml`.
 
 ### Como Usar a API
 
@@ -95,6 +96,16 @@ A API estará disponível em `http://localhost:8080` e é versionada através do
   * **Fluxos Básicos:**
 
     1.  **Registrar:** `POST` para `http://localhost:8080/api/v1/auth/register` com `username`, `email` e `password`.
-    2.  **Login:** `POST` para `http://localhost:8080/api/v1/auth/login` com `username` e `password`. O corpo da resposta conterá o **JWT** necessário.
+    2.  **Login:** `POST` para `http://localhost:8080/api/v1/auth/login` com `username` e `password`. O corpo da resposta conterá o **JWT** necessário para autenticação em outras requisições.
     3.  **Criar um Post (Protegido):** `POST` para `http://localhost:8080/api/v1/posts` com o **JWT** no cabeçalho `Authorization: Bearer <seu_token>`.
     4. **Listar Posts (Paginado):** `GET` para `http://localhost:8080/api/v1/posts?page=0&size=10`.
+
+### Como Executar os Testes
+
+Para executar todos os testes do projeto (unitários e de integração), utilize o Maven:
+
+```bash
+mvn clean install
+```
+
+Este comando irá limpar o projeto, compilar o código, executar todos os testes e instalar o artefato no seu repositório Maven local.

@@ -1,8 +1,21 @@
-FROM openjdk:17-jdk-slim
+FROM maven:3.9.6-eclipse-temurin-17 AS builder
 
-VOLUME /tmp
+WORKDIR /build
 
-ARG JAR_FILE=target/socialnetwork-0.0.1-SNAPSHOT.jar
-COPY ${JAR_FILE} app.jar
+COPY pom.xml .
 
-ENTRYPOINT ["java", "-jar", "/app.jar"]
+RUN mvn dependency:go-offline
+
+COPY src ./src
+
+RUN mvn clean package -DskipTests
+
+FROM eclipse-temurin:17-jdk-jammy
+
+WORKDIR /app
+
+COPY --from=builder /build/target/*.jar app.jar
+
+EXPOSE 8080
+
+ENTRYPOINT ["java", "-jar", "app.jar"]

@@ -10,7 +10,6 @@ import com.example.socialnetwork.domain.entity.User;
 import com.example.socialnetwork.infrastructure.dto.ImageUploadResponse;
 import com.example.socialnetwork.infrastructure.dto.UserResponse;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -45,27 +44,23 @@ public class UserController {
     public ResponseEntity<ImageUploadResponse> uploadProfileImage(@RequestParam("file") MultipartFile file, Authentication authentication) {
         User currentUser = findUserOrThrow(authentication);
 
-        try {
-            String filename = fileStorageService.save(file);
+        String filename = fileStorageService.save(file);
 
-            var command = new UpdateUserProfileImageUseCase.UpdateUserProfileImageCommand(currentUser.getId(), filename, currentUser);
-            updateUserProfileImageUseCase.handle(command);
+        var command = new UpdateUserProfileImageUseCase.UpdateUserProfileImageCommand(currentUser.getId(), filename, currentUser);
+        updateUserProfileImageUseCase.handle(command);
 
-            String fileDownloadUri = ServletUriComponentsBuilder.fromCurrentContextPath()
-                    .path("/api/v1/images/")
-                    .path(filename)
-                    .toUriString();
+        String fileDownloadUri = ServletUriComponentsBuilder.fromCurrentContextPath()
+                .path("/api/v1/images/")
+                .path(filename)
+                .toUriString();
 
-            ImageUploadResponse response = new ImageUploadResponse();
-            response.setFileName(filename);
-            response.setFileDownloadUri(fileDownloadUri);
-            response.setFileType(file.getContentType());
-            response.setSize(file.getSize());
+        ImageUploadResponse response = new ImageUploadResponse();
+        response.setFileName(filename);
+        response.setFileDownloadUri(fileDownloadUri);
+        response.setFileType(file.getContentType());
+        response.setSize(file.getSize());
 
-            return ResponseEntity.ok(response);
-        } catch (Exception e) {
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+        return ResponseEntity.ok(response);
     }
 
     @PostMapping("/follow/{followingId}")

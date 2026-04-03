@@ -1,1 +1,3 @@
+com\example\socialnetwork\infrastructure\controller\PostControllerTest.class
 com\example\socialnetwork\SocialnetworkApplicationTests.class
+com\example\socialnetwork\application\usecase\post\impl\CreatePostUseCaseTest.class
