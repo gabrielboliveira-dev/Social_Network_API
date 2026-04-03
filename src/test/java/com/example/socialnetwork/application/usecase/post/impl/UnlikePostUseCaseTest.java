@@ -42,7 +42,7 @@ class UnlikePostUseCaseTest {
     @Test
     @DisplayName("Deve remover um like do post com sucesso")
     void shouldRemoveLikeFromPostSuccessfully() {
-        post.addLike(currentUser); // Adiciona o like para poder remover
+        post.addLike(currentUser);
         when(postRepository.findById(postId)).thenReturn(Optional.of(post));
         when(postRepository.save(any(Post.class))).thenReturn(post);
 
@@ -73,17 +73,17 @@ class UnlikePostUseCaseTest {
     @Test
     @DisplayName("Não deve remover um like se o usuário não curtiu o post")
     void shouldNotRemoveLikeIfUserHasNotLikedPost() {
-        // O usuário não curtiu o post, então o set de likes deve estar vazio ou não conter o usuário
+
         when(postRepository.findById(postId)).thenReturn(Optional.of(post));
         when(postRepository.save(any(Post.class))).thenReturn(post);
 
-        int initialLikesCount = post.getLikes().size(); // Deve ser 0
+        int initialLikesCount = post.getLikes().size();
 
         UnlikePostUseCase.UnlikePostCommand command = new UnlikePostUseCase.UnlikePostCommand(postId, currentUser);
         unlikePostUseCase.handle(command);
 
-        assertEquals(initialLikesCount, post.getLikes().size()); // O número de likes não deve mudar
+        assertEquals(initialLikesCount, post.getLikes().size());
         verify(postRepository, times(1)).findById(postId);
-        verify(postRepository, times(1)).save(post); // O save ainda é chamado para persistir o estado, mesmo que o like não tenha sido removido
+        verify(postRepository, times(1)).save(post);
     }
 }

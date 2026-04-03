@@ -43,10 +43,10 @@ class UnfollowUserUseCaseTest {
     @Test
     @DisplayName("Deve deixar de seguir um usuário com sucesso")
     void shouldUnfollowUserSuccessfully() {
-        currentUser.follow(userToUnfollow); // Garante que está seguindo
+        currentUser.follow(userToUnfollow);
         when(userRepository.findById(currentUserId)).thenReturn(Optional.of(currentUser));
         when(userRepository.findById(userToUnfollowId)).thenReturn(Optional.of(userToUnfollow));
-        when(userRepository.save(any(User.class))).thenReturn(currentUser).thenReturn(userToUnfollow); // Mock multiple saves
+        when(userRepository.save(any(User.class))).thenReturn(currentUser).thenReturn(userToUnfollow);
 
         UnfollowUserUseCase.UnfollowUserCommand command = new UnfollowUserUseCase.UnfollowUserCommand(currentUserId, userToUnfollowId);
         unfollowUserUseCase.handle(command);
@@ -55,7 +55,7 @@ class UnfollowUserUseCaseTest {
         assertFalse(userToUnfollow.getFollowers().contains(currentUser));
         verify(userRepository, times(1)).findById(currentUserId);
         verify(userRepository, times(1)).findById(userToUnfollowId);
-        verify(userRepository, times(2)).save(any(User.class)); // One for currentUser, one for userToUnfollow
+        verify(userRepository, times(2)).save(any(User.class));
     }
 
     @Test

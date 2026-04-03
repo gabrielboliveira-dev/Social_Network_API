@@ -50,7 +50,7 @@ class DeleteCommentUseCaseImplTest {
         comment = Comment.builder()
                 .id(commentId)
                 .content("Test comment")
-                .author(commentOwner) // Corrigido de .user() para .author()
+                .author(commentOwner)
                 .build();
     }
 

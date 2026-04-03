@@ -48,7 +48,6 @@ class LikePostUseCaseTest {
         LikePostUseCase.LikePostCommand command = new LikePostUseCase.LikePostCommand(postId, currentUser);
         likePostUseCase.handle(command);
 
-        // Corrigido: Verificar se existe um Like com o currentUser
         assertTrue(post.getLikes().stream().anyMatch(like -> like.getUser().equals(currentUser)));
         verify(postRepository, times(1)).findById(postId);
         verify(postRepository, times(1)).save(post);
