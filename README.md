@@ -1,111 +1,129 @@
-# Social Network API
+# 🚀 Social Network API: Uma API RESTful Moderna com Arquitetura Limpa
 
-### Uma API RESTful moderna construída com Arquitetura Limpa e Java
+## ✨ Visão Geral
 
-### Visão Geral
+Este projeto é uma API RESTful completa para uma rede social simplificada, desenvolvida com foco em demonstrar o domínio de conceitos avançados e boas práticas de engenharia de software. A arquitetura foi cuidadosamente construída seguindo os princípios da **Arquitetura Limpa (Clean Architecture)** e **SOLID**, garantindo um código altamente desacoplado, testável e de fácil manutenção.
 
-Este projeto é uma API RESTful completa para uma rede social simples, desenvolvida para demonstrar o domínio de conceitos avançados e boas práticas de engenharia de software. A arquitetura foi construída seguindo os princípios da **Arquitetura Limpa (Clean Architecture)** e **SOLID**, garantindo um código altamente desacoplado, testável e de fácil manutenção.
+A API oferece um conjunto robusto de funcionalidades para gestão de usuários, posts e interações sociais, tudo isso suportado por tecnologias de código aberto e configurado para rodar em containers Docker, promovendo escalabilidade, segurança e eficiência.
 
-O projeto utiliza um conjunto robusto de tecnologias de código aberto para criar uma solução escalável, com foco em segurança, eficiência e qualidade de código.
+## 🛠️ Tecnologias e Ferramentas
 
-### Funcionalidades Implementadas
+A aplicação utiliza as seguintes tecnologias, configuradas para rodar em containers Docker para um ambiente de desenvolvimento e produção consistente:
+
+*   **Linguagem de Programação:** Java 17
+*   **Framework Backend:** Spring Boot 3.3.1 (Web, Data JPA, Security, AMQP, Validation)
+    *   *Justificativa:* Escolha robusta para construir aplicações Java de forma rápida e eficiente, com ecossistema vasto para diversas necessidades.
+*   **Persistência:** PostgreSQL (banco de dados) e Spring Data JPA/Hibernate (acesso aos dados)
+    *   *Justificativa:* PostgreSQL é um banco de dados relacional poderoso e confiável. Spring Data JPA simplifica a interação com o banco de dados, e Hibernate é o ORM padrão.
+*   **Migrações de Banco de Dados:** Flyway
+    *   *Justificativa:* Garante o controle de versão do esquema do banco de dados, facilitando a evolução e a consistência entre ambientes.
+*   **Segurança:** Spring Security com JWT (JSON Web Token) e BCrypt (criptografia de senhas)
+    *   *Justificativa:* Padrão da indústria para autenticação e autorização em aplicações Spring, oferecendo segurança robusta e flexibilidade.
+*   **Build:** Maven
+*   **Containerização:** Docker e Docker Compose
+    *   *Justificativa:* Permite empacotar a aplicação e suas dependências em ambientes isolados, garantindo portabilidade e facilidade de implantação.
+*   **Testes:** JUnit 5, Mockito, Spring Boot Test, Testcontainers
+    *   *Justificativa:* Suíte completa para testes unitários, de integração e de componentes, com Testcontainers permitindo testes de integração com serviços reais (como PostgreSQL) em containers.
+*   **Documentação da API:** Swagger/OpenAPI (springdoc-openapi-starter-webmvc-ui)
+    *   *Justificativa:* Geração automática de documentação interativa da API, facilitando o desenvolvimento e o consumo por parte de outros sistemas ou desenvolvedores.
+*   **Produtividade:** Lombok
+    *   *Justificativa:* Reduz o código boilerplate (getters, setters, construtores, etc.), tornando o código mais limpo e conciso.
+
+## 🏛️ Arquitetura
+
+O projeto adota uma **Arquitetura Limpa (Clean Architecture)**, dividindo o código em camadas distintas para isolar as regras de negócio das tecnologias externas e garantir alta coesão e baixo acoplamento.
+
+*   **`domain`**: Contém as entidades de negócio (User, Post, Comment, Like) e as interfaces de repositório. Representa as regras de negócio mais internas e agnósticas a frameworks.
+*   **`application`**: Implementa a lógica de negócio específica da aplicação através de Casos de Uso (Use Cases) e Serviços (Services). Orquestra as operações do domínio.
+*   **`infrastructure`**: Camada mais externa, responsável por detalhes de implementação como controladores REST, DTOs (Data Transfer Objects), configurações de segurança, e implementações de persistência (repositórios JPA).
+
+## ✅ Funcionalidades Implementadas
 
 A API fornece as seguintes funcionalidades principais, todas protegidas por autenticação JWT:
 
-  * **Autenticação e Autorização:**
-      * Registro de novos usuários com validação de dados.
-      * Login com geração de **JWT (JSON Web Token)** para autenticação segura.
-      * Proteção de endpoints, permitindo acesso apenas a usuários autenticados e autorizados.
+### 🔐 Autenticação e Autorização
+*   **Registro de Usuários:** Criação de novas contas com validação de dados.
+*   **Login Seguro:** Autenticação de usuários com geração de JWT (JSON Web Token) para acesso seguro.
+*   **Proteção de Endpoints:** Controle de acesso a recursos da API, permitindo acesso apenas a usuários autenticados e autorizados.
 
-  * **Gestão de Usuários:**
-      * Criação e visualização de perfis de usuário.
-      * Funcionalidade de "seguir" e "deixar de seguir" outros usuários, estabelecendo relações sociais.
-      * **Upload de Imagem de Perfil** com armazenamento local, permitindo personalização.
+### 👤 Gestão de Usuários
+*   **Criação e Visualização de Perfis:** Registro e consulta de perfis de usuário.
+*   **Seguir/Deixar de Seguir:** Estabelecimento e remoção de relações sociais entre usuários.
+*   **Upload de Imagem de Perfil:** Personalização do perfil com armazenamento local de imagens.
 
-  * **Gestão de Posts:**
-      * Criação, visualização, atualização e exclusão de posts.
-      * **Upload de Imagem para Posts** com armazenamento local, enriquecendo o conteúdo.
-      * **Adicionar e Remover "gostei" (likes)** em posts, para interação dos usuários.
-      * **Adicionar e Excluir comentários** em posts, promovendo discussões.
-      * Paginação na listagem de posts para melhor performance e experiência do usuário.
+### 📝 Gestão de Posts
+*   **CRUD de Posts:** Criação, visualização, atualização e exclusão de posts.
+*   **Upload de Imagem para Posts:** Enriquecimento de posts com imagens, armazenadas localmente.
+*   **Likes em Posts:** Adicionar e remover "gostei" em posts para interação dos usuários.
+*   **Comentários em Posts:** Adicionar e excluir comentários em posts, promovendo discussões.
+*   **Listagem Paginada:** Visualização de posts com suporte a paginação para melhor performance e experiência do usuário.
 
-### Tecnologias Utilizadas
-
-A aplicação utiliza as seguintes tecnologias, que foram configuradas para rodar em containers Docker:
-
-  * **Linguagem de Programação:** Java 17
-  * **Framework Backend:** Spring Boot 3.3.1 (Web, Data JPA, Security)
-  * **Persistência:** PostgreSQL (banco de dados) e Spring Data JPA/Hibernate (acesso aos dados)
-  * **Segurança:** Spring Security com JWT e BCrypt (criptografia de senhas)
-  * **Build:** Maven
-  * **Containerização:** Docker e Docker Compose (para ambiente de desenvolvimento e produção)
-  * **Testes:** JUnit 5, Mockito, Spring Boot Test, Testcontainers (para testes de integração com PostgreSQL)
-  * **Documentação da API:** Swagger/OpenAPI (para exploração interativa da API)
-  * **Boas Práticas:** Arquitetura Limpa, SOLID, DTOs e Jakarta Bean Validation, Tratamento Global de Exceções.
-
-### Estrutura do Projeto
-
-A arquitetura do projeto é dividida em camadas para isolar as responsabilidades e as regras de negócio das tecnologias externas, conforme o padrão de Arquitetura Limpa.
-
-```
-social-network-api/
-├── src/
-│   └── main/
-│       └── java/
-│           └── com/
-│               └── example/
-│                   └── socialnetwork/
-│                       ├── domain/           <-- Entidades de Negócio e Interfaces de Repositório
-│                       ├── application/      <-- Lógica de Negócio (Casos de Uso/Serviços)
-│                       └── infrastructure/   <-- API (Controladores, DTOs), Configurações de Segurança e Persistência
-├── Dockerfile                        <-- Instruções para construir a imagem da aplicação
-├── docker-compose.yml                <-- Orquestração da aplicação e do banco de dados
-└── README.md
-```
-
-### Como Executar o Projeto
+## ⚙️ Como Rodar o Projeto
 
 Para executar a aplicação e o banco de dados localmente em containers, siga estas instruções:
 
 1.  **Pré-requisitos:**
-      * Tenha o **Java JDK 17+** e o **Maven** instalados.
-      * Tenha o **Docker Desktop** instalado e em execução no seu computador.
+    *   Tenha o **Java JDK 17+** e o **Maven** instalados.
+    *   Tenha o **Docker Desktop** instalado e em execução no seu computador.
 
 2.  **Clone o Repositório e Navegue até a Pasta:**
+
     ```bash
     git clone https://github.com/gabrielboliveira-dev/Social_Network_API
-    cd social-network-api
+    cd Social_Network_API
     ```
 
-3.  **Configurações de Ambiente (Variáveis de Ambiente):**
-    As credenciais e configurações sensíveis não ficam expostas no código. Utilizamos variáveis de ambiente, principalmente no `docker-compose.yml`. Certifique-se de preencher a variável `JWT_SECRET` de forma adequada para garantir que os tokens gerados sejam seguros. As configurações para o banco de dados (`DB_URL`, `DB_USERNAME`, `DB_PASSWORD`) também são definidas via variáveis de ambiente no `docker-compose.yml`.
+3.  **Configurações de Ambiente (`.env`):**
+    *   Crie um arquivo chamado `.env` na raiz do projeto (ao lado do `docker-compose.yml`).
+    *   Preencha-o com as seguintes variáveis, **substituindo `SUA_CHAVE_SECRETA_MUITO_LONGA_E_COMPLEXA_AQUI` por uma string aleatória e forte de pelo menos 32 caracteres (256 bits) para o `JWT_SECRET`**.
+
+        ```
+        # Banco de Dados
+        DB_USERNAME=postgres
+        DB_PASSWORD=postgres
+        DB_URL=jdbc:postgresql://db:5432/postgres
+
+        # JWT
+        JWT_SECRET=SUA_CHAVE_SECRETA_MUITO_LONGA_E_COMPLEXA_AQUI
+        JWT_EXPIRATION=86400000
+        ```
+    *   *Importante:* A segurança do seu JWT depende diretamente da força desta chave. Não use o placeholder em produção.
 
 4.  **Construir e Iniciar os Containers:**
-      * Execute o comando `docker-compose up --build`.
-      * A primeira execução pode demorar, pois o Docker fará o download das imagens e a construção da sua aplicação.
-      * Este comando irá criar dois containers: um para a sua API e outro para o PostgreSQL.
-      * **Importante:** Se a porta 5432 estiver em uso, verifique se há outro serviço PostgreSQL rodando em sua máquina e pare-o, ou altere a porta no `docker-compose.yml`.
 
-### Como Usar a API
+    ```bash
+    docker-compose up --build
+    ```
+    *   A primeira execução pode demorar, pois o Docker fará o download das imagens e a construção da sua aplicação.
+    *   Este comando irá criar dois containers: um para a sua API (`app`) e outro para o PostgreSQL (`db`).
+    *   Verifique os logs para garantir que ambos os serviços iniciaram sem erros. A aplicação Spring Boot deve exibir `Started SocialnetworkApplication in X.XXX seconds`.
 
-A API estará disponível em `http://localhost:8080` e é versionada através do prefixo `/api/v1`. Você pode usar o **Postman** ou o **Swagger UI** para interagir com ela.
+5.  **Acessar a API:**
+    *   A API estará disponível em `http://localhost:8080`.
+    *   **Documentação da API (Swagger UI):** Acesse `http://localhost:8080/swagger-ui.html` no seu navegador para explorar e testar todos os endpoints de forma interativa.
 
-  * **Documentação da API (Swagger UI):**
-      * Acesse `http://localhost:8080/swagger-ui.html` no seu navegador. Você poderá visualizar e testar todos os endpoints da sua API de forma interativa.
+## 🗺️ Endpoints Principais
 
-  * **Fluxos Básicos:**
+| Método | Rota                                     | Descrição                                         |
+| :----- | :--------------------------------------- | :------------------------------------------------ |
+| `POST` | `/api/v1/auth/register`                  | Registra um novo usuário.                         |
+| `POST` | `/api/v1/auth/login`                     | Autentica um usuário e retorna um JWT.            |
+| `GET`  | `/api/v1/users/me`                       | Retorna o perfil do usuário autenticado.          |
+| `POST` | `/api/v1/users/{userId}/follow`          | Segue um usuário específico.                      |
+| `POST` | `/api/v1/posts`                          | Cria um novo post.                                |
+| `GET`  | `/api/v1/posts`                          | Lista todos os posts (com paginação).             |
+| `POST` | `/api/v1/posts/{postId}/comments`        | Adiciona um comentário a um post.                 |
+| `POST` | `/api/v1/posts/{postId}/like`            | Adiciona um "gostei" a um post.                   |
+| `POST` | `/api/v1/images/profile`                 | Faz upload da imagem de perfil do usuário.        |
 
-    1.  **Registrar:** `POST` para `http://localhost:8080/api/v1/auth/register` com `username`, `email` e `password`.
-    2.  **Login:** `POST` para `http://localhost:8080/api/v1/auth/login` com `username` e `password`. O corpo da resposta conterá o **JWT** necessário para autenticação em outras requisições.
-    3.  **Criar um Post (Protegido):** `POST` para `http://localhost:8080/api/v1/posts` com o **JWT** no cabeçalho `Authorization: Bearer <seu_token>`.
-    4. **Listar Posts (Paginado):** `GET` para `http://localhost:8080/api/v1/posts?page=0&size=10`.
+## 🌟 Demonstração de Boas Práticas
 
-### Como Executar os Testes
+Este projeto é um exemplo prático da aplicação de diversas boas práticas de desenvolvimento de software:
 
-Para executar todos os testes do projeto (unitários e de integração), utilize o Maven:
-
-```bash
-mvn clean install
-```
-
-Este comando irá limpar o projeto, compilar o código, executar todos os testes e instalar o artefato no seu repositório Maven local.
+*   **Arquitetura Limpa:** Separação clara de responsabilidades entre as camadas de domínio, aplicação e infraestrutura.
+*   **Princípios SOLID:** Código projetado para ser flexível, extensível e de fácil manutenção.
+*   **DTOs (Data Transfer Objects):** Utilização de DTOs para desacoplar a camada de apresentação da camada de domínio.
+*   **Jakarta Bean Validation:** Validação de dados de entrada para garantir a integridade das informações.
+*   **Tratamento Global de Exceções:** Gerenciamento centralizado de erros para fornecer respostas consistentes e informativas da API.
+*   **Testes Abrangentes:** Inclusão de testes unitários e de integração (com Testcontainers) para garantir a qualidade e a robustez do código.
+*   **Segurança:** Implementação de autenticação JWT e criptografia de senhas com BCrypt.
