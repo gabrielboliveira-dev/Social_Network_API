@@ -41,7 +41,7 @@ import org.springframework.boot.autoconfigure.security.servlet.SecurityFilterAut
                 SecurityFilterAutoConfiguration.class
         }
 )
-@AutoConfigureMockMvc(addFilters = false)
+@AutoConfigureMockMvc
 @Import(GlobalExceptionHandler.class)
 class PostControllerTest {
 
@@ -60,12 +60,12 @@ class PostControllerTest {
     @MockBean private FindUserByUsernameUseCase findUserByUsernameUseCase;
     @MockBean private FileStorageService fileStorageService;
     @MockBean private UserDetailsService userDetailsService;
-    @MockBean private JwtTokenUtil jwtTokenUtil; // Adicionado para resolver o erro
+    @MockBean private JwtTokenUtil jwtTokenUtil;
 
 
     @Test
     @DisplayName("Deve retornar 400 Bad Request quando o conteúdo do post for vazio")
-    @WithMockUser(username = "testuser") // 🔥 FORMA CORRETA
+    @WithMockUser(username = "testuser")
     void shouldReturnBadRequestWhenPostContentIsEmpty() throws Exception {
 
         User mockUser = User.builder()
@@ -88,7 +88,7 @@ class PostControllerTest {
                         .content(requestBody))
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.status").value(400))
-                .andExpect(jsonPath("$.message").value("Erro na validação dos campos")) // Corrigido aqui
+                .andExpect(jsonPath("$.message").value("Erro na validação dos campos"))
                 .andExpect(jsonPath("$.errors.content").exists());
     }
 }
